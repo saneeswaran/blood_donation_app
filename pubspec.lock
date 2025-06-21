@@ -105,6 +105,14 @@ packages:
       url: "https://pub.dev"
     source: hosted
     version: "1.0.8"
+  curved_labeled_navigation_bar:
+    dependency: "direct main"
+    description:
+      name: curved_labeled_navigation_bar
+      sha256: "936d8a34128478498e330588dbed3fdd7a6cc55ebada6e67340c080387e1a37e"
+      url: "https://pub.dev"
+    source: hosted
+    version: "2.0.6"
   delightful_toast:
     dependency: "direct main"
     description:
@@ -113,14 +121,6 @@ packages:
       url: "https://pub.dev"
     source: hosted
     version: "1.1.0"
-  dots_indicator:
-    dependency: "direct main"
-    description:
-      name: dots_indicator
-      sha256: c070af5058a084ba7b354df4b4c26c719595d70a3531eea6edd8af8716684ba3
-      url: "https://pub.dev"
-    source: hosted
-    version: "4.0.1"
   fake_async:
     dependency: transitive
     description:
@@ -357,6 +357,14 @@ packages:
     description: flutter
     source: sdk
     version: "0.0.0"
+  smooth_page_indicator:
+    dependency: "direct main"
+    description:
+      name: smooth_page_indicator
+      sha256: b21ebb8bc39cf72d11c7cfd809162a48c3800668ced1c9da3aade13a32cf6c1c
+      url: "https://pub.dev"
+    source: hosted
+    version: "1.2.1"
   source_span:
     dependency: transitive
     description:
@@ -413,6 +421,14 @@ packages:
       url: "https://pub.dev"
     source: hosted
     version: "1.4.0"
+  universal_io:
+    dependency: transitive
+    description:
+      name: universal_io
+      sha256: "1722b2dcc462b4b2f3ee7d188dad008b6eb4c40bbd03a3de451d82c78bba9aad"
+      url: "https://pub.dev"
+    source: hosted
+    version: "2.2.2"
   vector_graphics:
     dependency: transitive
     description:

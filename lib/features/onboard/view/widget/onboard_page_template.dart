@@ -4,9 +4,9 @@ import 'package:blood_donation/features/auth/view/sign_in_page.dart';
 import 'package:blood_donation/features/auth/view/sign_up_page.dart';
 import 'package:blood_donation/features/onboard/view%20model/onboard_view_repo.dart';
 import 'package:blood_donation/features/widgets/custom_elevated_button.dart';
-import 'package:dots_indicator/dots_indicator.dart';
 import 'package:flutter/material.dart';
 import 'package:provider/provider.dart';
+import 'package:smooth_page_indicator/smooth_page_indicator.dart';
 
 class OnboardPageTemplate extends StatelessWidget {
   const OnboardPageTemplate({super.key});
@@ -28,16 +28,15 @@ class OnboardPageTemplate extends StatelessWidget {
               onPressed: () => onboardProvider.skipOnboard(),
               child: const Text("Skip", style: TextStyle(color: Colors.black)),
             ),
-            DotsIndicator(
-              dotsCount: onboardProvider.onboardData.length,
-              position: onboardProvider.currentIndex.toDouble(),
-              animate: true,
-              decorator: const DotsDecorator(
-                activeColor: Appcolor.primaryColor,
-                activeSize: Size(22, 10),
-                activeShape: RoundedRectangleBorder(
-                  borderRadius: BorderRadius.all(Radius.circular(5)),
-                ),
+            SmoothPageIndicator(
+              controller: onboardProvider.pageController,
+              count: onboardProvider.onboardData.length,
+              effect: const WormEffect(
+                dotWidth: 15,
+                dotHeight: 15,
+                dotColor: Appcolor.mediaiuGrey,
+                activeDotColor: Appcolor.primaryColor,
+                type: WormType.normal,
               ),
             ),
             IconButton(
@@ -45,7 +44,10 @@ class OnboardPageTemplate extends StatelessWidget {
                 backgroundColor: Appcolor.primaryColor,
               ),
               onPressed: () {
-                onboardProvider.moveToNextPage();
+                onboardProvider.currentIndex ==
+                        onboardProvider.onboardData.length - 1
+                    ? navigateTo(context, const SignInPage())
+                    : onboardProvider.moveToNextPage();
               },
               icon: const Icon(
                 Icons.arrow_forward,

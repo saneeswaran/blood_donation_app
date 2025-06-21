@@ -108,4 +108,9 @@ class AuthRepo extends ChangeNotifier {
     }
     return false;
   }
+
+  void logout() async {
+    await firebaseAuth.signOut();
+    notifyListeners();
+  }
 }
