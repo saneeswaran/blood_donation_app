@@ -2,31 +2,47 @@ import 'package:blood_donation/core/color/appcolor.dart';
 import 'package:blood_donation/core/constants/constants.dart';
 import 'package:blood_donation/core/util/util.dart';
 import 'package:blood_donation/features/auth/view%20model/auth_repo.dart';
+import 'package:blood_donation/features/auth/view/sign_up_page.dart';
 import 'package:blood_donation/features/bottom%20nav%20bar/view/bottom_nav_bar.dart';
 import 'package:blood_donation/features/widgets/custom_elevated_button.dart';
 import 'package:blood_donation/features/widgets/custom_text_formfield.dart';
+import 'package:blood_donation/features/widgets/loader.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_svg/svg.dart';
 import 'package:provider/provider.dart';
 
-class SignInPage extends StatelessWidget {
+class SignInPage extends StatefulWidget {
   const SignInPage({super.key});
 
   @override
+  State<SignInPage> createState() => _SignInPageState();
+}
+
+class _SignInPageState extends State<SignInPage> {
+  final emailController = TextEditingController();
+  final passwordController = TextEditingController();
+  final formKey = GlobalKey<FormState>();
+
+  @override
+  void dispose() {
+    emailController.dispose();
+    passwordController.dispose();
+    super.dispose();
+  }
+
+  @override
   Widget build(BuildContext context) {
-    final emailController = TextEditingController();
-    final passwordController = TextEditingController();
-    final formKey = GlobalKey<FormState>();
-    final Size size = MediaQuery.of(context).size;
+    final size = MediaQuery.of(context).size;
+
     return Scaffold(
       appBar: AppBar(backgroundColor: Appcolor.scaffoldBackgroundColor),
       body: Padding(
         padding: const EdgeInsets.all(20),
         child: SingleChildScrollView(
+          keyboardDismissBehavior: ScrollViewKeyboardDismissBehavior.onDrag,
           child: Form(
             key: formKey,
             child: Column(
-              spacing: size.height * 0.02,
               crossAxisAlignment: CrossAxisAlignment.start,
               children: [
                 SizedBox(height: size.height * 0.1),
@@ -34,60 +50,55 @@ class SignInPage extends StatelessWidget {
                   "Sign In Your Account",
                   style: TextStyle(fontSize: 22, fontWeight: FontWeight.bold),
                 ),
+                SizedBox(height: size.height * 0.02),
                 CustomTextFormfield(
                   hintText: "Email",
                   controller: emailController,
+                  keyboardType: TextInputType.emailAddress,
                 ),
+                SizedBox(height: size.height * 0.02),
                 Consumer<AuthRepo>(
                   builder: (context, provider, child) {
-                    final isShow = provider.isShowPassword;
                     return CustomTextFormfield(
                       hintText: "Password",
                       controller: passwordController,
-                      obScureText: !isShow,
+                      obScureText: !provider.isShowPassword,
+
                       suffixIcon: IconButton(
-                        onPressed: () {
-                          provider.showPassword();
-                        },
+                        onPressed: () => provider.showPassword(),
                         icon: Icon(
-                          isShow ? Icons.visibility : Icons.remove_red_eye,
+                          provider.isShowPassword
+                              ? Icons.visibility
+                              : Icons.visibility_off,
                         ),
                       ),
                     );
                   },
                 ),
-                SizedBox(
-                  height: size.height * 0.07,
-                  width: size.width * 1,
-                  child: Consumer<AuthRepo>(
-                    builder: (context, provider, child) {
-                      final isLoading = provider.isLoading;
-                      return CustomElevatedButton(
-                        onPressed: () async {
-                          if (formKey.currentState!.validate()) {
-                            bool isSuccess = await provider.login(
-                              context: context,
-                              email: emailController.text,
-                              password: passwordController.text,
-                            );
-                            if (isSuccess && context.mounted) {
-                              navigateAndFinish(context, const BottomNavBar());
-                            }
-                          }
-                        },
-                        child: isLoading
-                            ? const CircularProgressIndicator.adaptive()
+                SizedBox(height: size.height * 0.04),
+                Consumer<AuthRepo>(
+                  builder: (context, provider, child) {
+                    return SizedBox(
+                      height: size.height * 0.07,
+                      width: double.infinity,
+                      child: CustomElevatedButton(
+                        onPressed: _handleLogin,
+                        child: provider.isLoading
+                            ? const Loader()
                             : const Text(
-                                "Sign Up",
+                                "Sign In",
                                 style: TextStyle(color: Colors.white),
                               ),
-                      );
-                    },
-                  ),
+                      ),
+                    );
+                  },
                 ),
+                SizedBox(height: size.height * 0.03),
                 _dividerRow(),
+                SizedBox(height: size.height * 0.03),
                 Center(child: _signInWithGoogle(size: size)),
-                _moveToLoginPage(context: context),
+                SizedBox(height: size.height * 0.03),
+                _moveToSignUpPage(context: context),
               ],
             ),
           ),
@@ -95,37 +106,6 @@ class SignInPage extends StatelessWidget {
       ),
     );
   }
-
-  // Widget _bloodDropDownButton() {
-  //   return Consumer<AuthRepo>(
-  //     builder: (context, provider, child) {
-  //       final types = provider.bloodTypes;
-  //       final items = types
-  //           .map((e) => DropdownMenuItem(value: e, child: Text(e)))
-  //           .toList();
-  //       return DropdownButtonFormField(
-  //         decoration: InputDecoration(
-  //           filled: true,
-  //           fillColor: Appcolor.lightGrey,
-  //           enabledBorder: OutlineInputBorder(
-  //             borderRadius: BorderRadius.circular(10),
-  //             borderSide: const BorderSide(color: Appcolor.lightGrey),
-  //           ),
-  //           focusedBorder: OutlineInputBorder(
-  //             borderSide: const BorderSide(color: Appcolor.lightGrey),
-  //             borderRadius: BorderRadius.circular(10),
-  //           ),
-  //           errorBorder: OutlineInputBorder(
-  //             borderRadius: BorderRadius.circular(10),
-  //             borderSide: const BorderSide(color: Colors.red),
-  //           ),
-  //         ),
-  //         items: items,
-  //         onChanged: (value) => provider.setBloodType(value!),
-  //       );
-  //     },
-  //   );
-  // }
 
   Widget _dividerRow() {
     return const Row(
@@ -157,13 +137,13 @@ class SignInPage extends StatelessWidget {
     );
   }
 
-  Widget _moveToLoginPage({required BuildContext context}) {
+  Widget _moveToSignUpPage({required BuildContext context}) {
     return Row(
       mainAxisAlignment: MainAxisAlignment.center,
       children: [
-        const Text("Dont have an account? "),
+        const Text("Don’t have an account? "),
         TextButton(
-          onPressed: () => navigateTo(context, const SignInPage()),
+          onPressed: () => navigateTo(context, const SignUpPage()),
           child: const Text(
             "Sign Up",
             style: TextStyle(color: Appcolor.primaryColor),
@@ -171,5 +151,21 @@ class SignInPage extends StatelessWidget {
         ),
       ],
     );
+  }
+
+  Future<void> _handleLogin() async {
+    final provider = Provider.of<AuthRepo>(context, listen: false);
+
+    if (!formKey.currentState!.validate()) return;
+
+    final isSuccess = await provider.login(
+      context: context,
+      email: emailController.text.trim(),
+      password: passwordController.text.trim(),
+    );
+
+    if (isSuccess && mounted) {
+      navigateAndFinish(context, const BottomNavBar());
+    }
   }
 }

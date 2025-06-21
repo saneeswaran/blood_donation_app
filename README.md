@@ -14,3 +14,34 @@ A few resources to get you started if this is your first Flutter project:
 For help getting started with Flutter development, view the
 [online documentation](https://docs.flutter.dev/), which offers tutorials,
 samples, guidance on mobile development, and a full API reference.
+
+// Widget \_bloodDropDownButton() {
+// return Consumer<AuthRepo>(
+// builder: (context, provider, child) {
+// final types = provider.bloodTypes;
+// final items = types
+// .map((e) => DropdownMenuItem(value: e, child: Text(e)))
+// .toList();
+// return DropdownButtonFormField(
+// decoration: InputDecoration(
+// filled: true,
+// fillColor: Appcolor.lightGrey,
+// enabledBorder: OutlineInputBorder(
+// borderRadius: BorderRadius.circular(10),
+// borderSide: const BorderSide(color: Appcolor.lightGrey),
+// ),
+// focusedBorder: OutlineInputBorder(
+// borderSide: const BorderSide(color: Appcolor.lightGrey),
+// borderRadius: BorderRadius.circular(10),
+// ),
+// errorBorder: OutlineInputBorder(
+// borderRadius: BorderRadius.circular(10),
+// borderSide: const BorderSide(color: Colors.red),
+// ),
+// ),
+// items: items,
+// onChanged: (value) => provider.setBloodType(value!),
+// );
+// },
+// );
+// }

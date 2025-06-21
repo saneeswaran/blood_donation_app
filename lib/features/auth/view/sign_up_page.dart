@@ -1,3 +1,5 @@
+import 'dart:developer';
+
 import 'package:blood_donation/core/color/appcolor.dart';
 import 'package:blood_donation/core/constants/constants.dart';
 import 'package:blood_donation/core/util/util.dart';
@@ -5,6 +7,7 @@ import 'package:blood_donation/features/auth/view%20model/auth_repo.dart';
 import 'package:blood_donation/features/auth/view/sign_in_page.dart';
 import 'package:blood_donation/features/bottom%20nav%20bar/view/bottom_nav_bar.dart';
 import 'package:blood_donation/features/widgets/custom_elevated_button.dart';
+import 'package:blood_donation/features/widgets/custom_snack_bar.dart';
 import 'package:blood_donation/features/widgets/custom_text_formfield.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_svg/svg.dart';
@@ -48,12 +51,12 @@ class _SignUpPageState extends State<SignUpPage> {
             child: Column(
               crossAxisAlignment: CrossAxisAlignment.start,
               children: [
-                SizedBox(height: size.height * 0.05),
+                SizedBox(height: size.height * 0.03),
                 const Text(
                   "Sign Up Your Account",
                   style: TextStyle(fontSize: 22, fontWeight: FontWeight.bold),
                 ),
-                SizedBox(height: size.height * 0.02),
+                SizedBox(height: size.height * 0.04),
                 CustomTextFormfield(
                   hintText: "Username",
                   controller: nameController,
@@ -111,35 +114,7 @@ class _SignUpPageState extends State<SignUpPage> {
                       height: size.height * 0.07,
                       width: double.infinity,
                       child: CustomElevatedButton(
-                        onPressed: () async {
-                          if (!formKey.currentState!.validate()) return;
-                          if (passwordController.text.trim() !=
-                              confirmPasswordController.text.trim()) {
-                            showSnackBar(
-                              context: context,
-                              message: "Passwords do not match",
-                            );
-                            return;
-                          }
-                          if (!provider.checkBoxClicked) {
-                            showSnackBar(
-                              context: context,
-                              message: "Please accept terms and conditions",
-                            );
-                            return;
-                          }
-
-                          final isSuccess = await provider.register(
-                            context: context,
-                            name: nameController.text.trim(),
-                            email: emailController.text.trim(),
-                            password: passwordController.text.trim(),
-                          );
-
-                          if (isSuccess && context.mounted) {
-                            navigateAndFinish(context, const BottomNavBar());
-                          }
-                        },
+                        onPressed: _register,
                         child: provider.isLoading
                             ? const CircularProgressIndicator.adaptive(
                                 backgroundColor: Colors.white,
@@ -228,5 +203,32 @@ class _SignUpPageState extends State<SignUpPage> {
         ),
       ],
     );
+  }
+
+  Future<void> _register() async {
+    final provider = Provider.of<AuthRepo>(context, listen: false);
+    if (!formKey.currentState!.validate()) return;
+    if (passwordController.text.trim() !=
+        confirmPasswordController.text.trim()) {
+      failedSnackBar(context: context, message: "Passwords do not match");
+      log("Passwords do not match");
+      return;
+    }
+    if (provider.checkBoxClicked == false) {
+      failedSnackBar(
+        context: context,
+        message: "Please accept terms and conditions",
+      );
+      log("Please accept terms and conditions");
+    }
+    final isSuccess = await provider.register(
+      context: context,
+      name: nameController.text,
+      email: emailController.text,
+      password: passwordController.text,
+    );
+    if (isSuccess && mounted) {
+      navigateAndFinish(context, const BottomNavBar());
+    }
   }
 }

@@ -19,5 +19,3 @@ void navigateAndFinish(context, widget) => Navigator.pushAndRemoveUntil(
   ),
   (route) => false,
 );
-
-void showSnackBar({required BuildContext context, required String message}) {}

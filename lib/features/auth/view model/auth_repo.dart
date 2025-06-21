@@ -1,5 +1,5 @@
-import 'package:blood_donation/core/util/util.dart';
 import 'package:blood_donation/features/auth/model/user_model.dart';
+import 'package:blood_donation/features/widgets/custom_snack_bar.dart';
 import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:firebase_auth/firebase_auth.dart';
 import 'package:flutter/material.dart';
@@ -47,6 +47,12 @@ class AuthRepo extends ChangeNotifier {
   //login functions
   bool _isloading = false;
   bool get isLoading => _isloading;
+
+  void setLoading(bool value) {
+    _isloading = value;
+    notifyListeners();
+  }
+
   Future<bool> register({
     required BuildContext context,
     required String name,
@@ -54,7 +60,7 @@ class AuthRepo extends ChangeNotifier {
     required String password,
   }) async {
     try {
-      _isloading = true;
+      setLoading(true);
       await firebaseAuth.createUserWithEmailAndPassword(
         email: email,
         password: password,
@@ -68,12 +74,13 @@ class AuthRepo extends ChangeNotifier {
         password: password,
       );
       await userRef.set(userModel.toMap());
-      _isloading = false;
+      setLoading(false);
       notifyListeners();
       return true;
     } catch (e) {
       if (context.mounted) {
-        showSnackBar(context: context, message: e.toString());
+        setLoading(false);
+        failedSnackBar(message: e.toString(), context: context);
       }
     }
     return false;
@@ -85,17 +92,18 @@ class AuthRepo extends ChangeNotifier {
     required String password,
   }) async {
     try {
-      _isloading = true;
+      setLoading(true);
       await firebaseAuth.signInWithEmailAndPassword(
         email: email,
         password: password,
       );
-      _isloading = false;
+      setLoading(false);
       notifyListeners();
       return true;
     } catch (e) {
       if (context.mounted) {
-        showSnackBar(context: context, message: e.toString());
+        setLoading(false);
+        failedSnackBar(message: e.toString(), context: context);
       }
     }
     return false;

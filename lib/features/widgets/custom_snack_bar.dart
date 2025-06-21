@@ -3,7 +3,7 @@ import 'package:delightful_toast/toast/components/toast_card.dart';
 import 'package:delightful_toast/toast/utils/enums.dart';
 import 'package:flutter/material.dart';
 
-void successSnackBar(String message, BuildContext context) {
+void successSnackBar({required String message, required BuildContext context}) {
   DelightToastBar(
     builder: (context) => ToastCard(
       color: Colors.white,
@@ -22,7 +22,7 @@ void successSnackBar(String message, BuildContext context) {
   ).show(context);
 }
 
-void failedSnackBar(String message, BuildContext context) {
+void failedSnackBar({required String message, required BuildContext context}) {
   DelightToastBar(
     builder: (context) => ToastCard(
       color: Colors.red,
