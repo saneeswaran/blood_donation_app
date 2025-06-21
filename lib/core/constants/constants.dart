@@ -1,5 +1,5 @@
 class Constants {
-  static const String onboardPath = "assets/images/";
+  static const String onboardPath = "assets/images";
 }
 
 class AppImages {
