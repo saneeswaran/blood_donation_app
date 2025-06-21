@@ -1,5 +1,8 @@
 import 'package:blood_donation/core/color/appcolor.dart';
-import 'package:blood_donation/features/auth/view%20model/onboard_view_repo.dart';
+import 'package:blood_donation/core/util/util.dart';
+import 'package:blood_donation/features/auth/view/sign_in_page.dart';
+import 'package:blood_donation/features/auth/view/sign_up_page.dart';
+import 'package:blood_donation/features/onboard/view%20model/onboard_view_repo.dart';
 import 'package:blood_donation/features/widgets/custom_elevated_button.dart';
 import 'package:dots_indicator/dots_indicator.dart';
 import 'package:flutter/material.dart';
@@ -106,7 +109,7 @@ class OnboardPageTemplate extends StatelessWidget {
                       ),
                       onboardProvider.currentIndex ==
                               onboardProvider.onboardData.length - 1
-                          ? _customButtons(size: size)
+                          ? _customButtons(size: size, context: context)
                           : const Spacer(),
                     ],
                   ),
@@ -119,14 +122,14 @@ class OnboardPageTemplate extends StatelessWidget {
     );
   }
 
-  Widget _customButtons({required Size size}) {
+  Widget _customButtons({required Size size, required BuildContext context}) {
     return Column(
       children: [
         SizedBox(
           height: size.height * 0.06,
           width: size.width * 0.8,
           child: CustomElevatedButton(
-            onPressed: () {},
+            onPressed: () => navigateTo(context, const SignUpPage()),
             child: const Text("Sign Up", style: TextStyle(color: Colors.white)),
           ),
         ),
@@ -135,7 +138,7 @@ class OnboardPageTemplate extends StatelessWidget {
           height: size.height * 0.06,
           width: size.width * 0.8,
           child: CustomElevatedButton(
-            onPressed: () {},
+            onPressed: () => navigateTo(context, const SignInPage()),
             backgroundColor: Colors.white,
             child: const Text(
               "Sign In",

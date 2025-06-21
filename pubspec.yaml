@@ -30,22 +30,19 @@ environment:
 dependencies:
   animations: ^2.0.11
   cloud_firestore: ^5.6.9
+  country_state_city_picker: ^1.2.8
   cupertino_icons: ^1.0.8
+  delightful_toast: ^1.1.0
   dots_indicator: ^4.0.1
   firebase_auth: ^5.6.0
   firebase_core: ^3.14.0
   flutter:
     sdk: flutter
+  flutter_svg: ^2.2.0
   page_transition: ^2.2.1
   provider: ^6.1.5
 
 dev_dependencies:
-
-  # The "flutter_lints" package below contains a set of recommended lints to
-  # encourage good coding practices. The lint set provided by the package is
-  # activated in the `analysis_options.yaml` file located at the root of your
-  # package. See that file for information about deactivating specific lint
-  # rules and activating additional ones.
   flutter_lints: ^5.0.0
   flutter_test:
     sdk: flutter
@@ -62,6 +59,7 @@ flutter:
   # To add assets to your application, add an assets section, like this:
   assets:
     - assets/images/
+    - assets/svg/
   # An image asset can refer to one or more resolution-specific "variants", see
   # https://flutter.dev/to/resolution-aware-images
   # For details regarding adding assets from package dependencies, see

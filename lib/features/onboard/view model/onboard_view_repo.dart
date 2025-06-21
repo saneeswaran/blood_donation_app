@@ -1,5 +1,5 @@
 import 'package:blood_donation/core/constants/constants.dart';
-import 'package:blood_donation/features/auth/model/onboard_model.dart';
+import 'package:blood_donation/features/onboard/model/onboard_model.dart';
 import 'package:flutter/material.dart';
 
 class OnboardViewRepo extends ChangeNotifier {

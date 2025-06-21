@@ -1,4 +1,4 @@
-import 'package:blood_donation/features/auth/view/widget/onboard_page_template.dart';
+import 'package:blood_donation/features/onboard/view/widget/onboard_page_template.dart';
 import 'package:flutter/material.dart';
 
 class OnboardPage extends StatelessWidget {
