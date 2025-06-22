@@ -28,7 +28,9 @@ class UserListTemplate extends StatelessWidget {
             onTap: () => navigateTo(context, const ViewUserTemplate()),
             leading: const CircleAvatar(
               radius: 30,
-              backgroundImage: CachedNetworkImageProvider(""),
+              backgroundImage: CachedNetworkImageProvider(
+                "https://cdn.hero.page/pfp/8ff73a9f-2f4b-4b7e-b5c2-bcf085d192f6-chibi-anime-girl-portrait-cute-anime-profile-pictures-for-girls-1.png",
+              ),
             ),
             title: const Text(
               "name",

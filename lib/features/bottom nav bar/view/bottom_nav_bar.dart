@@ -1,9 +1,10 @@
+import 'package:animations/animations.dart';
 import 'package:blood_donation/core/color/appcolor.dart';
 import 'package:blood_donation/features/bottom%20nav%20bar/view%20model/bottom_nav_repo.dart';
-import 'package:curved_labeled_navigation_bar/curved_navigation_bar.dart';
-import 'package:curved_labeled_navigation_bar/curved_navigation_bar_item.dart';
+import 'package:blood_donation/features/form/view/add_donor_form.dart';
 import 'package:flutter/material.dart';
 import 'package:provider/provider.dart';
+import 'package:stylish_bottom_bar/stylish_bottom_bar.dart';
 
 class BottomNavBar extends StatelessWidget {
   const BottomNavBar({super.key});
@@ -13,24 +14,39 @@ class BottomNavBar extends StatelessWidget {
     final provider = Provider.of<BottomNavRepo>(context);
     return Scaffold(
       floatingActionButtonLocation: FloatingActionButtonLocation.centerDocked,
-      floatingActionButton: FloatingActionButton(
-        shape: const CircleBorder(),
-        elevation: 0.0,
-        tooltip: "Become a Donor",
-        backgroundColor: Appcolor.primaryColor,
-        onPressed: () {},
-        child: const Icon(Icons.add, color: Colors.white),
+      floatingActionButton: OpenContainer(
+        transitionType: ContainerTransitionType.fadeThrough,
+        transitionDuration: const Duration(milliseconds: 400),
+        closedElevation: 6.0,
+        closedShape: const RoundedRectangleBorder(
+          borderRadius: BorderRadius.all(Radius.circular(50)),
+        ),
+        closedColor: Appcolor.scaffoldBackgroundColor,
+        closedBuilder: (context, openContainer) {
+          return FloatingActionButton(
+            shape: const CircleBorder(),
+            elevation: 0.0,
+            tooltip: "Become a Donor",
+            backgroundColor: Appcolor.scaffoldBackgroundColor,
+            onPressed: openContainer,
+            child: const Icon(Icons.add, color: Colors.black),
+          );
+        },
+        openBuilder: (context, closedContainer) => const AddDonorForm(),
       ),
-      bottomNavigationBar: CurvedNavigationBar(
-        buttonBackgroundColor: Appcolor.scaffoldBackgroundColor,
+      bottomNavigationBar: StylishBottomBar(
+        option: AnimatedBarOptions(iconStyle: IconStyle.animated),
         backgroundColor: Appcolor.lightGrey,
-        animationCurve: Curves.easeInOutCirc,
-        animationDuration: const Duration(milliseconds: 300),
+        currentIndex: provider.currentIndex,
+        hasNotch: true,
+        fabLocation: StylishBarFabLocation.center,
+        notchStyle: NotchStyle.square,
         items: List.generate(
           provider.pages.length,
-          (index) => CurvedNavigationBarItem(
-            child: Icon(provider.navIcon[index]),
-            label: provider.navLable[index],
+          (index) => BottomBarItem(
+            title: Text(provider.navLable[index]),
+            selectedColor: Appcolor.primaryColor,
+            icon: Icon(provider.navIcon[index]),
           ),
         ),
         onTap: provider.setPage,

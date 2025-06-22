@@ -2,6 +2,7 @@
 
 import 'package:blood_donation/core/color/appcolor.dart';
 import 'package:blood_donation/features/search/view%20model/search_repo.dart';
+import 'package:blood_donation/features/search/view/widget/user_list_template.dart';
 import 'package:blood_donation/features/widgets/custom_elevated_button.dart';
 import 'package:cached_network_image/cached_network_image.dart';
 import 'package:flutter/material.dart';
@@ -88,40 +89,47 @@ class _ViewUserTemplateState extends State<ViewUserTemplate> {
           style: TextStyle(color: Colors.black, fontWeight: FontWeight.bold),
         ),
       ),
-      body: SingleChildScrollView(
-        child: Column(
-          spacing: 12,
-          children: [
-            //image
-            const Center(
-              child: CircleAvatar(
-                radius: 60,
-                backgroundImage: CachedNetworkImageProvider(""),
+      body: Column(
+        spacing: 12,
+        children: [
+          //image
+          const Center(
+            child: CircleAvatar(
+              radius: 60,
+              backgroundImage: CachedNetworkImageProvider(
+                "https://cdn.hero.page/pfp/8ff73a9f-2f4b-4b7e-b5c2-bcf085d192f6-chibi-anime-girl-portrait-cute-anime-profile-pictures-for-girls-1.png",
               ),
             ),
-            const Center(
-              child: Text(
-                "UserName",
-                style: TextStyle(fontSize: 22, fontWeight: FontWeight.bold),
-              ),
+          ),
+          const Center(
+            child: Text(
+              "UserName",
+              style: TextStyle(fontSize: 22, fontWeight: FontWeight.bold),
             ),
-            const Center(
-              child: Text(
-                "Last Donation : December, 2024",
-                style: TextStyle(fontSize: 18, color: Appcolor.mediaiuGrey),
-              ),
+          ),
+          const Center(
+            child: Text(
+              "Last Donation : December, 2024",
+              style: TextStyle(fontSize: 18, color: Appcolor.mediaiuGrey),
             ),
-            const SizedBox(height: 3),
-            Row(
-              mainAxisAlignment: MainAxisAlignment.spaceEvenly,
-              children: [
-                _customContainer(size: size, title: "Donated", value: "06"),
-                _customContainer(size: size, title: "Blood Type", value: "A-"),
-                _customContainer(size: size, title: "Age", value: "20"),
-              ],
+          ),
+          const SizedBox(height: 3),
+          Row(
+            mainAxisAlignment: MainAxisAlignment.spaceEvenly,
+            children: [
+              _customContainer(size: size, title: "Donated", value: "06"),
+              _customContainer(size: size, title: "Blood Type", value: "A-"),
+              _customContainer(size: size, title: "Age", value: "20"),
+            ],
+          ),
+          Expanded(
+            child: SizedBox(
+              height: size.height * 0.7,
+              width: size.width * 1,
+              child: const UserListTemplate(),
             ),
-          ],
-        ),
+          ),
+        ],
       ),
     );
   }
