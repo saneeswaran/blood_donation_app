@@ -4,10 +4,9 @@ import 'package:page_transition/page_transition.dart';
 void navigateTo(context, widget) => Navigator.push(
   context,
   PageTransition(
-    alignment: Alignment.center,
     type: PageTransitionType.rightToLeftJoined,
     childCurrent: widget,
-    duration: const Duration(milliseconds: 500),
+    duration: const Duration(milliseconds: 400),
     child: widget,
   ),
 );

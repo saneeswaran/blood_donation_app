@@ -4,6 +4,7 @@ import 'package:blood_donation/features/bottom%20nav%20bar/view%20model/bottom_n
 import 'package:blood_donation/features/bottom%20nav%20bar/view/bottom_nav_bar.dart';
 import 'package:blood_donation/features/onboard/view%20model/onboard_view_repo.dart';
 import 'package:blood_donation/features/onboard/view/onboard_page.dart';
+import 'package:blood_donation/features/search/view%20model/search_repo.dart';
 import 'package:blood_donation/firebase_options.dart';
 import 'package:firebase_auth/firebase_auth.dart';
 import 'package:firebase_core/firebase_core.dart';
@@ -19,6 +20,7 @@ void main() async {
         ChangeNotifierProvider(create: (_) => OnboardViewRepo()),
         ChangeNotifierProvider(create: (_) => AuthRepo()),
         ChangeNotifierProvider(create: (_) => BottomNavRepo()),
+        ChangeNotifierProvider(create: (_) => SearchRepo()),
       ],
       child: MaterialApp(
         title: "Blood Donation",

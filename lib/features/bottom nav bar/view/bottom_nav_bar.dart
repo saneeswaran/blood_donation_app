@@ -12,10 +12,20 @@ class BottomNavBar extends StatelessWidget {
   Widget build(BuildContext context) {
     final provider = Provider.of<BottomNavRepo>(context);
     return Scaffold(
+      floatingActionButtonLocation: FloatingActionButtonLocation.centerDocked,
+      floatingActionButton: FloatingActionButton(
+        shape: const CircleBorder(),
+        elevation: 0.0,
+        tooltip: "Become a Donor",
+        backgroundColor: Appcolor.primaryColor,
+        onPressed: () {},
+        child: const Icon(Icons.add, color: Colors.white),
+      ),
       bottomNavigationBar: CurvedNavigationBar(
         buttonBackgroundColor: Appcolor.scaffoldBackgroundColor,
         backgroundColor: Appcolor.lightGrey,
         animationCurve: Curves.easeInOutCirc,
+        animationDuration: const Duration(milliseconds: 300),
         items: List.generate(
           provider.pages.length,
           (index) => CurvedNavigationBarItem(
