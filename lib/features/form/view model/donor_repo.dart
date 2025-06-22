@@ -113,9 +113,69 @@ class DonorRepo extends ChangeNotifier {
       if (querySnapshot.docs.isNotEmpty) {
         await querySnapshot.docs.first.reference.delete();
         setLoading(false);
+        _allDonor.removeWhere((e) => e.donorId == getCurrentUser());
+        _filterDonor = _allDonor;
+        setLoading(false);
         notifyListeners();
         return true;
       }
+    } catch (e) {
+      setLoading(false);
+      if (context.mounted) {
+        failedSnackBar(message: e.toString(), context: context);
+      }
+    }
+    return false;
+  }
+
+  Future<bool> updateDonorDetails({
+    required BuildContext context,
+    required String name,
+    required String bloodType,
+    required String donorId,
+    required int age,
+    required String gender,
+    required DateTime dob,
+    required String bloodGroup,
+    required String phone,
+    required String email,
+    required String address,
+    required String city,
+    required String state,
+    required String pinCode,
+    required bool hasChronicDisease,
+    required bool acceptedTerms,
+  }) async {
+    try {
+      setLoading(true);
+      final currentUser = FirebaseAuth.instance.currentUser!.uid;
+      final doc = await collectionReference
+          .where("donorId", isEqualTo: donorId)
+          .get();
+      final DonorModel donorModel = DonorModel(
+        name: name,
+        bloodType: bloodType,
+        donorId: donorId,
+        age: age,
+        gender: gender,
+        dob: dob,
+        bloodGroup: bloodGroup,
+        phone: phone,
+        email: email,
+        address: address,
+        city: city,
+        state: state,
+        pinCode: pinCode,
+        hasChronicDisease: hasChronicDisease,
+        acceptedTerms: acceptedTerms,
+      );
+      await doc.docs.first.reference.update(donorModel.toMap());
+      final index = _allDonor.indexWhere((e) => e.donorId == currentUser);
+      _allDonor[index] = donorModel;
+      _filterDonor = _allDonor;
+      setLoading(false);
+      notifyListeners();
+      return true;
     } catch (e) {
       setLoading(false);
       if (context.mounted) {
