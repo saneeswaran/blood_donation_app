@@ -34,16 +34,6 @@ class AuthRepo extends ChangeNotifier {
     notifyListeners();
   }
 
-  // blood types
-  List<String> bloodTypes = ['A+', 'A-', 'B+', 'B-', 'AB+', 'AB-', 'O+', 'O-'];
-
-  String? type;
-
-  void setBloodType(String value) {
-    type = value;
-    notifyListeners();
-  }
-
   //login functions
   bool _isloading = false;
   bool get isLoading => _isloading;
