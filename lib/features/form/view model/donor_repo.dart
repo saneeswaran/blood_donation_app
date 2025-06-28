@@ -184,15 +184,4 @@ class DonorRepo extends ChangeNotifier {
     }
     return false;
   }
-
-  //donor helper
-  // blood types
-  List<String> bloodTypes = ['A+', 'A-', 'B+', 'B-', 'AB+', 'AB-', 'O+', 'O-'];
-
-  String? type;
-
-  void setBloodType(String value) {
-    type = value;
-    notifyListeners();
-  }
 }
