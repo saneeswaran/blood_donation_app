@@ -9,3 +9,7 @@ class AppImages {
   static const String onboard2 = "${Constants.onboardPath}/onboard2.jpg";
   static const String onboard3 = "${Constants.onboardPath}/onboard3.jpg";
 }
+
+class AppData {
+  static const String states = "assets/state/states-and-districts.json";
+}

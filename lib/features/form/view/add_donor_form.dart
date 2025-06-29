@@ -1,5 +1,8 @@
 import 'package:blood_donation/core/color/appcolor.dart';
 import 'package:blood_donation/features/form/controller/donor_ui_controller.dart';
+import 'package:blood_donation/features/form/view%20model/donor_repo.dart';
+import 'package:blood_donation/features/form/widget/state_district_dropdown.dart';
+import 'package:blood_donation/features/widgets/custom_elevated_button.dart';
 import 'package:blood_donation/features/widgets/custom_text_formfield.dart';
 import 'package:flutter/material.dart';
 import 'package:provider/provider.dart';
@@ -14,10 +17,21 @@ class AddDonorForm extends StatefulWidget {
 class _AddDonorFormState extends State<AddDonorForm> {
   final formKey = GlobalKey<FormState>();
   final nameController = TextEditingController();
-  final gmailController = TextEditingController();
+  final emailController = TextEditingController();
   final mobileNumberController = TextEditingController();
   final ageController = TextEditingController();
   final phoneNumberController = TextEditingController();
+
+  @override
+  void dispose() {
+    formKey.currentState?.dispose();
+    nameController.dispose();
+    emailController.dispose();
+    mobileNumberController.dispose();
+    ageController.dispose();
+    phoneNumberController.dispose();
+    super.dispose();
+  }
 
   @override
   Widget build(BuildContext context) {
@@ -37,7 +51,7 @@ class _AddDonorFormState extends State<AddDonorForm> {
               CustomTextFormfield(hintText: "Name", controller: nameController),
               CustomTextFormfield(
                 hintText: "Email",
-                controller: gmailController,
+                controller: emailController,
               ),
               CustomTextFormfield(
                 hintText: "Age",
@@ -53,6 +67,47 @@ class _AddDonorFormState extends State<AddDonorForm> {
               _bloodType(),
               _cronicDisease(),
               _genderDropDown(),
+              const StateDistrictDropdown(),
+              SizedBox(
+                height: size.height * 0.07,
+                width: size.width * 1,
+                child: Consumer<DonorRepo>(
+                  builder: (context, provider, child) {
+                    return CustomElevatedButton(
+                      onPressed: () async {
+                        final uiController = Provider.of<DonorUiController>(
+                          context,
+                          listen: false,
+                        );
+                        final isSuccess = await provider.addDonor(
+                          context: context,
+                          name: nameController.text,
+                          age: int.parse(ageController.text),
+                          gender: provider,
+                          dob: dob,
+                          bloodGroup: uiController.bloodType!,
+                          phone: phoneNumberController.text,
+                          email: emailController.text,
+                          address: address,
+                          city:,
+                          state: state,
+                          pinCode: pinCode,
+                          lastDonationDate: lastDonationDate,
+                          hasDonatedBefore: hasDonatedBefore,
+                          weight: weight,
+                          hasChronicDisease: uiController.hasChronicDisease!,
+                          acceptedTerms: acceptedTerms,
+                        );
+                      },
+                      child: const Text(
+                        "Submit",
+                        style: TextStyle(color: Colors.white, fontSize: 18),
+                      ),
+                    );
+                  },
+                ),
+              ),
+              const SizedBox(height: 20),
             ],
           ),
         ),
@@ -136,10 +191,8 @@ class _AddDonorFormState extends State<AddDonorForm> {
             .toList();
         return DropdownButtonFormField(
           decoration: InputDecoration(
-            hint: const Text(
-              "Select Gender",
-              style: TextStyle(color: Colors.grey),
-            ),
+            hintText: "Select Gender",
+            hintStyle: TextStyle(color: Colors.grey.shade600),
             filled: true,
             fillColor: Appcolor.lightGrey,
             enabledBorder: OutlineInputBorder(

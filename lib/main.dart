@@ -2,6 +2,7 @@ import 'package:blood_donation/core/color/appcolor.dart';
 import 'package:blood_donation/features/auth/view%20model/auth_repo.dart';
 import 'package:blood_donation/features/bottom%20nav%20bar/view%20model/bottom_nav_repo.dart';
 import 'package:blood_donation/features/bottom%20nav%20bar/view/bottom_nav_bar.dart';
+import 'package:blood_donation/features/form/controller/donor_ui_controller.dart';
 import 'package:blood_donation/features/form/view%20model/donor_repo.dart';
 import 'package:blood_donation/features/onboard/view%20model/onboard_view_repo.dart';
 import 'package:blood_donation/features/onboard/view/onboard_page.dart';
@@ -23,6 +24,8 @@ void main() async {
         ChangeNotifierProvider(create: (_) => BottomNavRepo()),
         ChangeNotifierProvider(create: (_) => SearchRepo()),
         ChangeNotifierProvider(create: (_) => DonorRepo()),
+        //ui controllers
+        ChangeNotifierProvider(create: (_) => DonorUiController()),
       ],
       child: MaterialApp(
         title: "Blood Donation",

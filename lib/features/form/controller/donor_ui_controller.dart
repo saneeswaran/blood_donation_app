@@ -1,14 +1,21 @@
+import 'dart:convert';
+
+import 'package:blood_donation/core/constants/constants.dart';
+import 'package:blood_donation/features/form/model/state_model.dart';
+import 'package:flutter/services.dart';
 import 'package:flutter/widgets.dart';
 
 class DonorUiController extends ChangeNotifier {
+  List<StateDistrictModel> _allStates = [];
+  List<StateDistrictModel> get allStates => _allStates;
   //donor helper
   // blood types
   List<String> bloodTypes = ['A+', 'A-', 'B+', 'B-', 'AB+', 'AB-', 'O+', 'O-'];
 
-  String? type;
+  String? bloodType;
 
   void setBloodType(String value) {
-    type = value;
+    bloodType = value;
     notifyListeners();
   }
 
@@ -51,5 +58,13 @@ class DonorUiController extends ChangeNotifier {
   void setCountry(String value) {
     _countryValue = value;
     notifyListeners();
+  }
+
+  Future<List<StateDistrictModel>> loadStateDistrictData() async {
+    final String jsonStr = await rootBundle.loadString(AppData.states);
+    final data = json.decode(jsonStr) as Map<String, dynamic>;
+    final List states = data['states'];
+    _allStates = states.map((e) => StateDistrictModel.fromMap(e)).toList();
+    return _allStates;
   }
 }
