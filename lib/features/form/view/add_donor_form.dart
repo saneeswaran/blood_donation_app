@@ -21,6 +21,7 @@ class _AddDonorFormState extends State<AddDonorForm> {
   final mobileNumberController = TextEditingController();
   final ageController = TextEditingController();
   final phoneNumberController = TextEditingController();
+  final dobController = TextEditingController();
 
   @override
   void dispose() {
@@ -67,6 +68,7 @@ class _AddDonorFormState extends State<AddDonorForm> {
               _bloodType(),
               _cronicDisease(),
               _genderDropDown(),
+              _dobPicker(),
               const StateDistrictDropdown(),
               SizedBox(
                 height: size.height * 0.07,
@@ -83,14 +85,14 @@ class _AddDonorFormState extends State<AddDonorForm> {
                           context: context,
                           name: nameController.text,
                           age: int.parse(ageController.text),
-                          gender: provider,
-                          dob: dob,
-                          bloodGroup: uiController.bloodType!,
+                          gender: uiController.gender!,
+                          dob: uiController.selectedDate!,
+                          bloodGroup: uiController.bloodTypeValue!,
                           phone: phoneNumberController.text,
                           email: emailController.text,
                           address: address,
-                          city:,
-                          state: state,
+                          city: uiController.cityValue!,
+                          state: uiController.stateValue!,
                           pinCode: pinCode,
                           lastDonationDate: lastDonationDate,
                           hasDonatedBefore: hasDonatedBefore,
@@ -210,6 +212,33 @@ class _AddDonorFormState extends State<AddDonorForm> {
           ),
           items: items,
           onChanged: (value) => provider.setGender(value!),
+        );
+      },
+    );
+  }
+
+  Widget _dobPicker() {
+    return Consumer<DonorUiController>(
+      builder: (context, provider, child) {
+        return GestureDetector(
+          onTap: () async {
+            DateTime? pickedDate = await showDatePicker(
+              context: context,
+              firstDate: DateTime(1990),
+              lastDate: DateTime.now(),
+            );
+            if (pickedDate != null) {
+              provider.setDate(pickedDate);
+            }
+          },
+          child: AbsorbPointer(
+            child: CustomTextFormfield(
+              hintText: provider.selectedDate == null
+                  ? "Date of Birth"
+                  : "${provider.selectedDate!.day}-${provider.selectedDate!.month}-${provider.selectedDate!.year}",
+              controller: dobController,
+            ),
+          ),
         );
       },
     );

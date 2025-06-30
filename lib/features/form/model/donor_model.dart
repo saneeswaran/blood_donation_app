@@ -15,7 +15,6 @@ class DonorModel {
   final String address;
   final String city;
   final String state;
-  final String pinCode;
   final bool hasChronicDisease;
   final bool acceptedTerms;
   DonorModel({
@@ -32,7 +31,6 @@ class DonorModel {
     required this.address,
     required this.city,
     required this.state,
-    required this.pinCode,
     required this.hasChronicDisease,
     required this.acceptedTerms,
   });
@@ -51,7 +49,6 @@ class DonorModel {
     String? address,
     String? city,
     String? state,
-    String? pinCode,
     bool? hasChronicDisease,
     bool? acceptedTerms,
   }) {
@@ -69,7 +66,6 @@ class DonorModel {
       address: address ?? this.address,
       city: city ?? this.city,
       state: state ?? this.state,
-      pinCode: pinCode ?? this.pinCode,
       hasChronicDisease: hasChronicDisease ?? this.hasChronicDisease,
       acceptedTerms: acceptedTerms ?? this.acceptedTerms,
     );
@@ -90,7 +86,6 @@ class DonorModel {
       'address': address,
       'city': city,
       'state': state,
-      'pinCode': pinCode,
       'hasChronicDisease': hasChronicDisease,
       'acceptedTerms': acceptedTerms,
     };
@@ -111,7 +106,6 @@ class DonorModel {
       address: map['address'] as String,
       city: map['city'] as String,
       state: map['state'] as String,
-      pinCode: map['pinCode'] as String,
       hasChronicDisease: map['hasChronicDisease'] as bool,
       acceptedTerms: map['acceptedTerms'] as bool,
     );
@@ -124,7 +118,7 @@ class DonorModel {
 
   @override
   String toString() {
-    return 'DonorModel(name: $name, id: $id, bloodType: $bloodType, donorId: $donorId, age: $age, gender: $gender, dob: $dob, bloodGroup: $bloodGroup, phone: $phone, email: $email, address: $address, city: $city, state: $state, pinCode: $pinCode, hasChronicDisease: $hasChronicDisease, acceptedTerms: $acceptedTerms)';
+    return 'DonorModel(name: $name, id: $id, bloodType: $bloodType, donorId: $donorId, age: $age, gender: $gender, dob: $dob, bloodGroup: $bloodGroup, phone: $phone, email: $email, address: $address, city: $city, state: $state,hasChronicDisease: $hasChronicDisease, acceptedTerms: $acceptedTerms)';
   }
 
   @override
@@ -144,7 +138,6 @@ class DonorModel {
         other.address == address &&
         other.city == city &&
         other.state == state &&
-        other.pinCode == pinCode &&
         other.hasChronicDisease == hasChronicDisease &&
         other.acceptedTerms == acceptedTerms;
   }
@@ -164,7 +157,6 @@ class DonorModel {
         address.hashCode ^
         city.hashCode ^
         state.hashCode ^
-        pinCode.hashCode ^
         hasChronicDisease.hashCode ^
         acceptedTerms.hashCode;
   }

@@ -2,6 +2,7 @@ import 'dart:convert';
 
 import 'package:blood_donation/core/constants/constants.dart';
 import 'package:blood_donation/features/form/model/state_model.dart';
+import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
 import 'package:flutter/widgets.dart';
 
@@ -12,27 +13,34 @@ class DonorUiController extends ChangeNotifier {
   // blood types
   List<String> bloodTypes = ['A+', 'A-', 'B+', 'B-', 'AB+', 'AB-', 'O+', 'O-'];
 
-  String? bloodType;
+  String? _bloodType;
+
+  String? get bloodTypeValue => _bloodType;
 
   void setBloodType(String value) {
-    bloodType = value;
+    _bloodType = value;
     notifyListeners();
   }
 
   //has croncic disease
   List<String> hasChronicDisease = ['Yes', 'No'];
-  String? chronicDisease;
+  String? _chronicDisease;
+
+  String? get hasChronicDiseaseValue => _chronicDisease;
 
   void setChronicDisease(String value) {
-    chronicDisease = value;
+    _chronicDisease = value;
     notifyListeners();
   }
 
+  //gender
   List<String> genderList = ["Male", "Female", "Other"];
-  String? gender;
+  String? _gender;
+
+  String? get gender => _gender;
 
   void setGender(String value) {
-    gender = value;
+    _gender = value;
     notifyListeners();
   }
 
@@ -66,5 +74,14 @@ class DonorUiController extends ChangeNotifier {
     final List states = data['states'];
     _allStates = states.map((e) => StateDistrictModel.fromMap(e)).toList();
     return _allStates;
+  }
+
+  //date picker
+  DateTime? _selectedDate;
+  DateTime? get selectedDate => _selectedDate;
+
+  void setDate(DateTime value) {
+    _selectedDate = value;
+    notifyListeners();
   }
 }

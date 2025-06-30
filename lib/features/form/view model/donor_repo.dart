@@ -64,7 +64,6 @@ class DonorRepo extends ChangeNotifier {
         address: address,
         city: city,
         state: state,
-        pinCode: pinCode,
         hasChronicDisease: hasChronicDisease,
         acceptedTerms: acceptedTerms,
       );
@@ -165,7 +164,6 @@ class DonorRepo extends ChangeNotifier {
         address: address,
         city: city,
         state: state,
-        pinCode: pinCode,
         hasChronicDisease: hasChronicDisease,
         acceptedTerms: acceptedTerms,
       );
