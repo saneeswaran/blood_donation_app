@@ -20,3 +20,24 @@ void navigateAndFinish(context, widget) => Navigator.pushAndRemoveUntil(
   ),
   (route) => false,
 );
+
+void dialog({
+  required BuildContext context,
+  required String title,
+  required Widget content,
+}) {
+  showDialog(
+    context: context,
+    builder: (context) => AlertDialog(
+      title: Text(
+        title,
+        style: const TextStyle(
+          color: Colors.black,
+          fontSize: 18,
+          fontWeight: FontWeight.bold,
+        ),
+      ),
+      content: content,
+    ),
+  );
+}

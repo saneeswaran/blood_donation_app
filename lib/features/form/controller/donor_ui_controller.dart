@@ -1,10 +1,12 @@
 import 'dart:convert';
 
+import 'package:blood_donation/core/color/appcolor.dart';
 import 'package:blood_donation/core/constants/constants.dart';
 import 'package:blood_donation/features/form/model/state_model.dart';
+import 'package:blood_donation/features/widgets/custom_text_formfield.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
-import 'package:flutter/widgets.dart';
+import 'package:provider/provider.dart';
 
 class DonorUiController extends ChangeNotifier {
   List<StateDistrictModel> _allStates = [];
@@ -83,5 +85,144 @@ class DonorUiController extends ChangeNotifier {
   void setDate(DateTime value) {
     _selectedDate = value;
     notifyListeners();
+  }
+
+  //terms and conditions
+  bool _isAccepted = false;
+
+  bool get isAccepted => _isAccepted;
+
+  void setAccepted(bool value) {
+    _isAccepted = value;
+    notifyListeners();
+  }
+
+  //widgets
+
+  Widget genderDropDown() {
+    return Consumer<DonorUiController>(
+      builder: (context, provider, child) {
+        final items = provider.genderList
+            .map((e) => DropdownMenuItem(value: e, child: Text(e)))
+            .toList();
+        return DropdownButtonFormField(
+          decoration: InputDecoration(
+            hintText: "Select Gender",
+            hintStyle: TextStyle(color: Colors.grey.shade600),
+            filled: true,
+            fillColor: Appcolor.lightGrey,
+            enabledBorder: OutlineInputBorder(
+              borderRadius: BorderRadius.circular(10),
+              borderSide: const BorderSide(color: Appcolor.lightGrey),
+            ),
+            focusedBorder: OutlineInputBorder(
+              borderSide: const BorderSide(color: Appcolor.lightGrey),
+              borderRadius: BorderRadius.circular(10),
+            ),
+            errorBorder: OutlineInputBorder(
+              borderRadius: BorderRadius.circular(10),
+              borderSide: const BorderSide(color: Colors.red),
+            ),
+          ),
+          items: items,
+          onChanged: (value) => provider.setGender(value!),
+        );
+      },
+    );
+  }
+
+  Widget cronicDisease() {
+    return Consumer<DonorUiController>(
+      builder: (context, provider, child) {
+        final items = provider.hasChronicDisease
+            .map((e) => DropdownMenuItem(value: e, child: Text(e)))
+            .toList();
+        return DropdownButtonFormField(
+          hint: const Text(
+            "Has Chronic Disease ?",
+            style: TextStyle(color: Colors.grey),
+          ),
+          decoration: InputDecoration(
+            filled: true,
+            fillColor: Appcolor.lightGrey,
+            enabledBorder: OutlineInputBorder(
+              borderRadius: BorderRadius.circular(10),
+              borderSide: const BorderSide(color: Appcolor.lightGrey),
+            ),
+            focusedBorder: OutlineInputBorder(
+              borderSide: const BorderSide(color: Appcolor.lightGrey),
+              borderRadius: BorderRadius.circular(10),
+            ),
+            errorBorder: OutlineInputBorder(
+              borderRadius: BorderRadius.circular(10),
+              borderSide: const BorderSide(color: Colors.red),
+            ),
+          ),
+          items: items,
+          onChanged: (value) => provider.setChronicDisease(value!),
+        );
+      },
+    );
+  }
+
+  Widget dobPicker({required TextEditingController controller}) {
+    return Consumer<DonorUiController>(
+      builder: (context, provider, child) {
+        return GestureDetector(
+          onTap: () async {
+            DateTime? pickedDate = await showDatePicker(
+              context: context,
+              firstDate: DateTime(1990),
+              lastDate: DateTime.now(),
+            );
+            if (pickedDate != null) {
+              provider.setDate(pickedDate);
+            }
+          },
+          child: AbsorbPointer(
+            child: CustomTextFormfield(
+              hintText: provider.selectedDate == null
+                  ? "Date of Birth"
+                  : "${provider.selectedDate!.day}-${provider.selectedDate!.month}-${provider.selectedDate!.year}",
+              controller: controller,
+            ),
+          ),
+        );
+      },
+    );
+  }
+
+  Widget bloodType() {
+    return Consumer<DonorUiController>(
+      builder: (context, provider, child) {
+        final items = provider.bloodTypes
+            .map((e) => DropdownMenuItem(value: e, child: Text(e)))
+            .toList();
+        return DropdownButtonFormField(
+          hint: const Text(
+            "Select Blood Type",
+            style: TextStyle(color: Colors.grey),
+          ),
+          decoration: InputDecoration(
+            filled: true,
+            fillColor: Appcolor.lightGrey,
+            enabledBorder: OutlineInputBorder(
+              borderRadius: BorderRadius.circular(10),
+              borderSide: const BorderSide(color: Appcolor.lightGrey),
+            ),
+            focusedBorder: OutlineInputBorder(
+              borderSide: const BorderSide(color: Appcolor.lightGrey),
+              borderRadius: BorderRadius.circular(10),
+            ),
+            errorBorder: OutlineInputBorder(
+              borderRadius: BorderRadius.circular(10),
+              borderSide: const BorderSide(color: Colors.red),
+            ),
+          ),
+          items: items,
+          onChanged: (value) => provider.setBloodType(value!),
+        );
+      },
+    );
   }
 }

@@ -1,8 +1,9 @@
-import 'package:blood_donation/core/color/appcolor.dart';
 import 'package:blood_donation/features/form/controller/donor_ui_controller.dart';
+import 'package:blood_donation/features/form/controller/google_map_provider.dart';
 import 'package:blood_donation/features/form/view%20model/donor_repo.dart';
 import 'package:blood_donation/features/form/widget/state_district_dropdown.dart';
 import 'package:blood_donation/features/widgets/custom_elevated_button.dart';
+import 'package:blood_donation/features/widgets/custom_snack_bar.dart';
 import 'package:blood_donation/features/widgets/custom_text_formfield.dart';
 import 'package:flutter/material.dart';
 import 'package:provider/provider.dart';
@@ -22,6 +23,10 @@ class _AddDonorFormState extends State<AddDonorForm> {
   final ageController = TextEditingController();
   final phoneNumberController = TextEditingController();
   final dobController = TextEditingController();
+
+  //
+  String? selectedDistrict;
+  String? selectedState;
 
   @override
   void dispose() {
@@ -65,182 +70,73 @@ class _AddDonorFormState extends State<AddDonorForm> {
                 maxLines: 10,
                 keyboardType: TextInputType.number,
               ),
-              _bloodType(),
-              _cronicDisease(),
-              _genderDropDown(),
-              _dobPicker(),
-              const StateDistrictDropdown(),
+              context.read<DonorUiController>().bloodType(),
+              context.read<DonorUiController>().cronicDisease(),
+              context.read<DonorUiController>().genderDropDown(),
+              context.read<DonorUiController>().dobPicker(
+                controller: dobController,
+              ),
+              StateDistrictDropdown(
+                selectedDistrict: selectedDistrict,
+                selectedState: selectedState,
+              ),
               SizedBox(
                 height: size.height * 0.07,
                 width: size.width * 1,
-                child: Consumer<DonorRepo>(
-                  builder: (context, provider, child) {
-                    return CustomElevatedButton(
-                      onPressed: () async {
-                        final uiController = Provider.of<DonorUiController>(
-                          context,
-                          listen: false,
-                        );
-                        final isSuccess = await provider.addDonor(
-                          context: context,
-                          name: nameController.text,
-                          age: int.parse(ageController.text),
-                          gender: uiController.gender!,
-                          dob: uiController.selectedDate!,
-                          bloodGroup: uiController.bloodTypeValue!,
-                          phone: phoneNumberController.text,
-                          email: emailController.text,
-                          address: address,
-                          city: uiController.cityValue!,
-                          state: uiController.stateValue!,
-                          pinCode: pinCode,
-                          lastDonationDate: lastDonationDate,
-                          hasDonatedBefore: hasDonatedBefore,
-                          weight: weight,
-                          hasChronicDisease: uiController.hasChronicDisease!,
-                          acceptedTerms: acceptedTerms,
-                        );
-                      },
-                      child: const Text(
-                        "Submit",
-                        style: TextStyle(color: Colors.white, fontSize: 18),
-                      ),
-                    );
-                  },
-                ),
+                child:
+                    Consumer3<DonorRepo, DonorUiController, GoogleMapProvider>(
+                      builder:
+                          (
+                            context,
+                            provider,
+                            uiController,
+                            googleMapProvider,
+                            child,
+                          ) {
+                            return CustomElevatedButton(
+                              onPressed: () async {
+                                final isSuccess = await provider.addDonor(
+                                  context: context,
+                                  name: nameController.text,
+                                  age: int.parse(ageController.text),
+                                  gender: uiController.gender!,
+                                  dob: uiController.selectedDate!,
+                                  bloodGroup: uiController.bloodTypeValue!,
+                                  phone: phoneNumberController.text,
+                                  email: emailController.text,
+                                  address: googleMapProvider.address,
+                                  bloodType: uiController.bloodTypeValue!,
+                                  city: selectedDistrict!,
+                                  state: selectedState!,
+                                  hasChronicDisease:
+                                      uiController.hasChronicDiseaseValue!,
+                                  acceptedTerms: uiController.isAccepted,
+                                );
+
+                                if (isSuccess && context.mounted) {
+                                  successSnackBar(
+                                    message:
+                                        "You have successfully become a Donor",
+                                    context: context,
+                                  );
+                                }
+                              },
+                              child: const Text(
+                                "Submit",
+                                style: TextStyle(
+                                  color: Colors.white,
+                                  fontSize: 18,
+                                ),
+                              ),
+                            );
+                          },
+                    ),
               ),
               const SizedBox(height: 20),
             ],
           ),
         ),
       ),
-    );
-  }
-
-  Widget _bloodType() {
-    return Consumer<DonorUiController>(
-      builder: (context, provider, child) {
-        final items = provider.bloodTypes
-            .map((e) => DropdownMenuItem(value: e, child: Text(e)))
-            .toList();
-        return DropdownButtonFormField(
-          hint: const Text(
-            "Select Blood Type",
-            style: TextStyle(color: Colors.grey),
-          ),
-          decoration: InputDecoration(
-            filled: true,
-            fillColor: Appcolor.lightGrey,
-            enabledBorder: OutlineInputBorder(
-              borderRadius: BorderRadius.circular(10),
-              borderSide: const BorderSide(color: Appcolor.lightGrey),
-            ),
-            focusedBorder: OutlineInputBorder(
-              borderSide: const BorderSide(color: Appcolor.lightGrey),
-              borderRadius: BorderRadius.circular(10),
-            ),
-            errorBorder: OutlineInputBorder(
-              borderRadius: BorderRadius.circular(10),
-              borderSide: const BorderSide(color: Colors.red),
-            ),
-          ),
-          items: items,
-          onChanged: (value) => provider.setBloodType(value!),
-        );
-      },
-    );
-  }
-
-  Widget _cronicDisease() {
-    return Consumer<DonorUiController>(
-      builder: (context, provider, child) {
-        final items = provider.hasChronicDisease
-            .map((e) => DropdownMenuItem(value: e, child: Text(e)))
-            .toList();
-        return DropdownButtonFormField(
-          hint: const Text(
-            "Has Chronic Disease ?",
-            style: TextStyle(color: Colors.grey),
-          ),
-          decoration: InputDecoration(
-            filled: true,
-            fillColor: Appcolor.lightGrey,
-            enabledBorder: OutlineInputBorder(
-              borderRadius: BorderRadius.circular(10),
-              borderSide: const BorderSide(color: Appcolor.lightGrey),
-            ),
-            focusedBorder: OutlineInputBorder(
-              borderSide: const BorderSide(color: Appcolor.lightGrey),
-              borderRadius: BorderRadius.circular(10),
-            ),
-            errorBorder: OutlineInputBorder(
-              borderRadius: BorderRadius.circular(10),
-              borderSide: const BorderSide(color: Colors.red),
-            ),
-          ),
-          items: items,
-          onChanged: (value) => provider.setChronicDisease(value!),
-        );
-      },
-    );
-  }
-
-  Widget _genderDropDown() {
-    return Consumer<DonorUiController>(
-      builder: (context, provider, child) {
-        final items = provider.genderList
-            .map((e) => DropdownMenuItem(value: e, child: Text(e)))
-            .toList();
-        return DropdownButtonFormField(
-          decoration: InputDecoration(
-            hintText: "Select Gender",
-            hintStyle: TextStyle(color: Colors.grey.shade600),
-            filled: true,
-            fillColor: Appcolor.lightGrey,
-            enabledBorder: OutlineInputBorder(
-              borderRadius: BorderRadius.circular(10),
-              borderSide: const BorderSide(color: Appcolor.lightGrey),
-            ),
-            focusedBorder: OutlineInputBorder(
-              borderSide: const BorderSide(color: Appcolor.lightGrey),
-              borderRadius: BorderRadius.circular(10),
-            ),
-            errorBorder: OutlineInputBorder(
-              borderRadius: BorderRadius.circular(10),
-              borderSide: const BorderSide(color: Colors.red),
-            ),
-          ),
-          items: items,
-          onChanged: (value) => provider.setGender(value!),
-        );
-      },
-    );
-  }
-
-  Widget _dobPicker() {
-    return Consumer<DonorUiController>(
-      builder: (context, provider, child) {
-        return GestureDetector(
-          onTap: () async {
-            DateTime? pickedDate = await showDatePicker(
-              context: context,
-              firstDate: DateTime(1990),
-              lastDate: DateTime.now(),
-            );
-            if (pickedDate != null) {
-              provider.setDate(pickedDate);
-            }
-          },
-          child: AbsorbPointer(
-            child: CustomTextFormfield(
-              hintText: provider.selectedDate == null
-                  ? "Date of Birth"
-                  : "${provider.selectedDate!.day}-${provider.selectedDate!.month}-${provider.selectedDate!.year}",
-              controller: dobController,
-            ),
-          ),
-        );
-      },
     );
   }
 }

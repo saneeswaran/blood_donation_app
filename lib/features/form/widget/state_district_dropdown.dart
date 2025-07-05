@@ -6,8 +6,12 @@ import 'package:dropdown_search/dropdown_search.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
 
+// ignore: must_be_immutable
 class StateDistrictDropdown extends StatefulWidget {
-  const StateDistrictDropdown({super.key});
+  String? selectedState;
+  String? selectedDistrict;
+
+  StateDistrictDropdown({super.key, this.selectedState, this.selectedDistrict});
 
   @override
   State<StateDistrictDropdown> createState() => _StateDistrictDropdownState();
@@ -17,9 +21,6 @@ class _StateDistrictDropdownState extends State<StateDistrictDropdown> {
   List<StateDistrictModel> _stateDistrictList = [];
   List<String> _states = [];
   List<String> _districts = [];
-
-  String? selectedState;
-  String? selectedDistrict;
 
   @override
   void initState() {
@@ -76,8 +77,8 @@ class _StateDistrictDropdownState extends State<StateDistrictDropdown> {
           },
           onChanged: (value) {
             setState(() {
-              selectedState = value;
-              selectedDistrict = null;
+              widget.selectedState = value;
+              widget.selectedDistrict = null;
               _districts = _stateDistrictList
                   .firstWhere((e) => e.state == value)
                   .districts;
@@ -97,7 +98,7 @@ class _StateDistrictDropdownState extends State<StateDistrictDropdown> {
                   .toList();
             }
           },
-          selectedItem: selectedDistrict,
+          selectedItem: widget.selectedDistrict,
           popupProps: const PopupProps.menu(showSearchBox: true),
           decoratorProps: DropDownDecoratorProps(
             decoration: InputDecoration(
@@ -120,7 +121,7 @@ class _StateDistrictDropdownState extends State<StateDistrictDropdown> {
           ),
           onChanged: (value) {
             setState(() {
-              selectedDistrict = value;
+              widget.selectedDistrict = value;
             });
           },
         ),

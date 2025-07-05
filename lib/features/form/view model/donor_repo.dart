@@ -36,13 +36,7 @@ class DonorRepo extends ChangeNotifier {
     required String address,
     required String city,
     required String state,
-    required String pinCode,
-    required DateTime lastDonationDate,
-    required bool hasDonatedBefore,
-    required int weight,
-    required bool hasChronicDisease,
-    required bool isOnMedication,
-    required bool isAvailable,
+    required String hasChronicDisease,
     required bool acceptedTerms,
     required String bloodType,
   }) async {
@@ -142,7 +136,7 @@ class DonorRepo extends ChangeNotifier {
     required String city,
     required String state,
     required String pinCode,
-    required bool hasChronicDisease,
+    required String hasChronicDisease,
     required bool acceptedTerms,
   }) async {
     try {
