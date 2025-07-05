@@ -24,7 +24,10 @@ class _AddDonorFormState extends State<AddDonorForm> {
   final phoneNumberController = TextEditingController();
   final dobController = TextEditingController();
 
-  //
+  //form
+  final formkey = GlobalKey<FormState>();
+
+  //city
   String? selectedDistrict;
   String? selectedState;
 
@@ -46,94 +49,106 @@ class _AddDonorFormState extends State<AddDonorForm> {
       body: Padding(
         padding: const EdgeInsets.all(20.0),
         child: SingleChildScrollView(
-          child: Column(
-            spacing: size.height * 0.02,
-            children: [
-              const SizedBox(height: 20),
-              const Text(
-                "Become a Donor",
-                style: TextStyle(fontSize: 22, fontWeight: FontWeight.bold),
-              ),
-              CustomTextFormfield(hintText: "Name", controller: nameController),
-              CustomTextFormfield(
-                hintText: "Email",
-                controller: emailController,
-              ),
-              CustomTextFormfield(
-                hintText: "Age",
-                controller: ageController,
-                maxLines: 2,
-              ),
-              CustomTextFormfield(
-                hintText: "+ 91",
-                controller: phoneNumberController,
-                maxLines: 10,
-                keyboardType: TextInputType.number,
-              ),
-              context.read<DonorUiController>().bloodType(),
-              context.read<DonorUiController>().cronicDisease(),
-              context.read<DonorUiController>().genderDropDown(),
-              context.read<DonorUiController>().dobPicker(
-                controller: dobController,
-              ),
-              StateDistrictDropdown(
-                selectedDistrict: selectedDistrict,
-                selectedState: selectedState,
-              ),
-              SizedBox(
-                height: size.height * 0.07,
-                width: size.width * 1,
-                child:
-                    Consumer3<DonorRepo, DonorUiController, GoogleMapProvider>(
-                      builder:
-                          (
-                            context,
-                            provider,
-                            uiController,
-                            googleMapProvider,
-                            child,
-                          ) {
-                            return CustomElevatedButton(
-                              onPressed: () async {
-                                final isSuccess = await provider.addDonor(
-                                  context: context,
-                                  name: nameController.text,
-                                  age: int.parse(ageController.text),
-                                  gender: uiController.gender!,
-                                  dob: uiController.selectedDate!,
-                                  bloodGroup: uiController.bloodTypeValue!,
-                                  phone: phoneNumberController.text,
-                                  email: emailController.text,
-                                  address: googleMapProvider.address,
-                                  bloodType: uiController.bloodTypeValue!,
-                                  city: selectedDistrict!,
-                                  state: selectedState!,
-                                  hasChronicDisease:
-                                      uiController.hasChronicDiseaseValue!,
-                                  acceptedTerms: uiController.isAccepted,
-                                );
+          child: Form(
+            key: formkey,
+            child: Column(
+              spacing: size.height * 0.02,
+              children: [
+                const SizedBox(height: 20),
+                const Text(
+                  "Become a Donor",
+                  style: TextStyle(fontSize: 22, fontWeight: FontWeight.bold),
+                ),
+                CustomTextFormfield(
+                  hintText: "Name",
+                  controller: nameController,
+                ),
+                CustomTextFormfield(
+                  hintText: "Email",
+                  controller: emailController,
+                ),
+                CustomTextFormfield(
+                  hintText: "Age",
+                  controller: ageController,
+                  maxLines: 2,
+                ),
+                CustomTextFormfield(
+                  hintText: "+ 91",
+                  controller: phoneNumberController,
+                  maxLines: 10,
+                  keyboardType: TextInputType.number,
+                ),
+                context.read<DonorUiController>().bloodType(),
+                context.read<DonorUiController>().cronicDisease(),
+                context.read<DonorUiController>().genderDropDown(),
+                context.read<DonorUiController>().dobPicker(
+                  controller: dobController,
+                ),
+                StateDistrictDropdown(
+                  selectedDistrict: selectedDistrict,
+                  selectedState: selectedState,
+                ),
+                SizedBox(
+                  height: size.height * 0.07,
+                  width: size.width * 1,
+                  child:
+                      Consumer3<
+                        DonorRepo,
+                        DonorUiController,
+                        GoogleMapProvider
+                      >(
+                        builder:
+                            (
+                              context,
+                              provider,
+                              uiController,
+                              googleMapProvider,
+                              child,
+                            ) {
+                              return CustomElevatedButton(
+                                onPressed: () async {
+                                  if (!formKey.currentState!.validate()) {
+                                    final isSuccess = await provider.addDonor(
+                                      context: context,
+                                      name: nameController.text,
+                                      age: int.parse(ageController.text),
+                                      gender: uiController.gender!,
+                                      dob: uiController.selectedDate!,
+                                      bloodGroup: uiController.bloodTypeValue!,
+                                      phone: phoneNumberController.text,
+                                      email: emailController.text,
+                                      address: googleMapProvider.address,
+                                      bloodType: uiController.bloodTypeValue!,
+                                      city: selectedDistrict!,
+                                      state: selectedState!,
+                                      hasChronicDisease:
+                                          uiController.hasChronicDiseaseValue!,
+                                      acceptedTerms: uiController.isAccepted,
+                                    );
 
-                                if (isSuccess && context.mounted) {
-                                  successSnackBar(
-                                    message:
-                                        "You have successfully become a Donor",
-                                    context: context,
-                                  );
-                                }
-                              },
-                              child: const Text(
-                                "Submit",
-                                style: TextStyle(
-                                  color: Colors.white,
-                                  fontSize: 18,
+                                    if (isSuccess && context.mounted) {
+                                      successSnackBar(
+                                        message:
+                                            "You have successfully become a Donor",
+                                        context: context,
+                                      );
+                                    }
+                                  }
+                                },
+                                child: const Text(
+                                  "Submit",
+                                  style: TextStyle(
+                                    color: Colors.white,
+                                    fontSize: 18,
+                                  ),
                                 ),
-                              ),
-                            );
-                          },
-                    ),
-              ),
-              const SizedBox(height: 20),
-            ],
+                              );
+                            },
+                      ),
+                ),
+                const SizedBox(height: 20),
+              ],
+            ),
           ),
         ),
       ),

@@ -45,6 +45,7 @@ class GoogleMapProvider with ChangeNotifier {
 
       // Get current location using Geolocator
       final position = await Geolocator.getCurrentPosition(
+        // ignore: deprecated_member_use
         desiredAccuracy: LocationAccuracy.high,
       );
 

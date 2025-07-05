@@ -26,7 +26,12 @@ class CustomTextFormfield extends StatelessWidget {
       controller: controller,
       obscureText: obScureText ?? false,
       maxLength: maxLines,
-      validator: (value) => value!.isEmpty ? "Please Enter $hintText" : null,
+      validator: (value) {
+        if (value == null || value.isEmpty) {
+          return "Please Enter $hintText";
+        }
+        return null;
+      },
       keyboardType: keyboardType,
       decoration: InputDecoration(
         hintText: hintText,
