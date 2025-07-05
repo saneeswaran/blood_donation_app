@@ -19,46 +19,46 @@ class _AddDonorFormState extends State<AddDonorForm> {
   final formKey = GlobalKey<FormState>();
   final nameController = TextEditingController();
   final emailController = TextEditingController();
-  final mobileNumberController = TextEditingController();
   final ageController = TextEditingController();
   final phoneNumberController = TextEditingController();
   final dobController = TextEditingController();
 
-  //form
-  final formkey = GlobalKey<FormState>();
-
-  //city
   String? selectedDistrict;
   String? selectedState;
 
   @override
   void dispose() {
-    formKey.currentState?.dispose();
     nameController.dispose();
     emailController.dispose();
-    mobileNumberController.dispose();
     ageController.dispose();
     phoneNumberController.dispose();
+    dobController.dispose();
     super.dispose();
   }
 
   @override
   Widget build(BuildContext context) {
-    final Size size = MediaQuery.of(context).size;
+    final size = MediaQuery.of(context).size;
+    final donorUI = context.read<DonorUiController>();
+
     return Scaffold(
       body: Padding(
         padding: const EdgeInsets.all(20.0),
         child: SingleChildScrollView(
           child: Form(
-            key: formkey,
+            key: formKey,
             child: Column(
               spacing: size.height * 0.02,
+              crossAxisAlignment: CrossAxisAlignment.start,
               children: [
                 const SizedBox(height: 20),
-                const Text(
-                  "Become a Donor",
-                  style: TextStyle(fontSize: 22, fontWeight: FontWeight.bold),
+                const Center(
+                  child: Text(
+                    "Become a Donor",
+                    style: TextStyle(fontSize: 22, fontWeight: FontWeight.bold),
+                  ),
                 ),
+                const SizedBox(height: 20),
                 CustomTextFormfield(
                   hintText: "Name",
                   controller: nameController,
@@ -70,27 +70,26 @@ class _AddDonorFormState extends State<AddDonorForm> {
                 CustomTextFormfield(
                   hintText: "Age",
                   controller: ageController,
-                  maxLines: 2,
-                ),
-                CustomTextFormfield(
-                  hintText: "+ 91",
-                  controller: phoneNumberController,
-                  maxLines: 10,
                   keyboardType: TextInputType.number,
                 ),
-                context.read<DonorUiController>().bloodType(),
-                context.read<DonorUiController>().cronicDisease(),
-                context.read<DonorUiController>().genderDropDown(),
-                context.read<DonorUiController>().dobPicker(
-                  controller: dobController,
+                CustomTextFormfield(
+                  hintText: "+91 Phone Number",
+                  controller: phoneNumberController,
+                  keyboardType: TextInputType.phone,
                 ),
+                donorUI.bloodType(),
+                donorUI.cronicDisease(),
+                donorUI.genderDropDown(),
+                donorUI.dobPicker(controller: dobController),
+                const SizedBox(height: 10),
                 StateDistrictDropdown(
-                  selectedDistrict: selectedDistrict,
                   selectedState: selectedState,
+                  selectedDistrict: selectedDistrict,
                 ),
+                const SizedBox(height: 20),
                 SizedBox(
+                  width: size.width,
                   height: size.height * 0.07,
-                  width: size.width * 1,
                   child:
                       Consumer3<
                         DonorRepo,
@@ -103,20 +102,34 @@ class _AddDonorFormState extends State<AddDonorForm> {
                               provider,
                               uiController,
                               googleMapProvider,
-                              child,
+                              _,
                             ) {
                               return CustomElevatedButton(
                                 onPressed: () async {
-                                  if (!formKey.currentState!.validate()) {
+                                  if (formKey.currentState!.validate()) {
+                                    if (selectedDistrict == null ||
+                                        selectedState == null) {
+                                      failedSnackBar(
+                                        message:
+                                            "Please select state and district",
+                                        context: context,
+                                      );
+                                      return;
+                                    }
+
                                     final isSuccess = await provider.addDonor(
                                       context: context,
-                                      name: nameController.text,
-                                      age: int.parse(ageController.text),
+                                      name: nameController.text.trim(),
+                                      age:
+                                          int.tryParse(
+                                            ageController.text.trim(),
+                                          ) ??
+                                          0,
                                       gender: uiController.gender!,
                                       dob: uiController.selectedDate!,
                                       bloodGroup: uiController.bloodTypeValue!,
-                                      phone: phoneNumberController.text,
-                                      email: emailController.text,
+                                      phone: phoneNumberController.text.trim(),
+                                      email: emailController.text.trim(),
                                       address: googleMapProvider.address,
                                       bloodType: uiController.bloodTypeValue!,
                                       city: selectedDistrict!,

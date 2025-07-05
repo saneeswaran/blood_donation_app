@@ -172,18 +172,21 @@ class DonorUiController extends ChangeNotifier {
           onTap: () async {
             DateTime? pickedDate = await showDatePicker(
               context: context,
-              firstDate: DateTime(1990),
+              firstDate: DateTime(1900),
               lastDate: DateTime.now(),
+              initialDate: provider.selectedDate ?? DateTime(2000),
             );
+
             if (pickedDate != null) {
               provider.setDate(pickedDate);
+
+              controller.text =
+                  "${pickedDate.day.toString().padLeft(2, '0')}-${pickedDate.month.toString().padLeft(2, '0')}-${pickedDate.year}";
             }
           },
           child: AbsorbPointer(
             child: CustomTextFormfield(
-              hintText: provider.selectedDate == null
-                  ? "Date of Birth"
-                  : "${provider.selectedDate!.day}-${provider.selectedDate!.month}-${provider.selectedDate!.year}",
+              hintText: "Date of Birth",
               controller: controller,
             ),
           ),
