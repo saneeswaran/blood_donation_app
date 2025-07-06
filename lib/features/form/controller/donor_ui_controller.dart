@@ -97,6 +97,23 @@ class DonorUiController extends ChangeNotifier {
     notifyListeners();
   }
 
+  //states
+  String? _selectedState;
+  String? _selectedCity;
+
+  String? get selectedState => _selectedState;
+  String? get selectedCity => _selectedCity;
+
+  void setStateValue(String value) {
+    _selectedState = value;
+    notifyListeners();
+  }
+
+  void setCityValue(String value) {
+    _selectedCity = value;
+    notifyListeners();
+  }
+
   //widgets
 
   Widget genderDropDown() {
