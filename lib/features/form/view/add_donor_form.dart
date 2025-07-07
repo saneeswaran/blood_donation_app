@@ -1,7 +1,7 @@
 import 'package:blood_donation/features/form/controller/donor_ui_controller.dart';
 import 'package:blood_donation/features/form/controller/google_map_provider.dart';
 import 'package:blood_donation/features/form/view%20model/donor_repo.dart';
-import 'package:blood_donation/features/form/widget/state_district_dropdown.dart';
+import 'package:blood_donation/features/form/view%20model/state_district_provider.dart';
 import 'package:blood_donation/features/widgets/custom_elevated_button.dart';
 import 'package:blood_donation/features/widgets/custom_snack_bar.dart';
 import 'package:blood_donation/features/widgets/custom_text_formfield.dart';
@@ -81,11 +81,8 @@ class _AddDonorFormState extends State<AddDonorForm> {
                 donorUI.cronicDisease(),
                 donorUI.genderDropDown(),
                 donorUI.dobPicker(controller: dobController),
+                context.read<StateDistrictProvider>().stateDropDownButton(),
                 const SizedBox(height: 10),
-                StateDistrictDropdown(
-                  selectedState: selectedState,
-                  selectedDistrict: selectedDistrict,
-                ),
                 const SizedBox(height: 20),
                 SizedBox(
                   width: size.width,

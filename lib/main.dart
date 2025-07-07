@@ -5,6 +5,7 @@ import 'package:blood_donation/features/bottom%20nav%20bar/view/bottom_nav_bar.d
 import 'package:blood_donation/features/form/controller/donor_ui_controller.dart';
 import 'package:blood_donation/features/form/controller/google_map_provider.dart';
 import 'package:blood_donation/features/form/view%20model/donor_repo.dart';
+import 'package:blood_donation/features/form/view%20model/state_district_provider.dart';
 import 'package:blood_donation/features/onboard/view%20model/onboard_view_repo.dart';
 import 'package:blood_donation/features/onboard/view/onboard_page.dart';
 import 'package:blood_donation/features/search/view%20model/search_repo.dart';
@@ -26,6 +27,7 @@ void main() async {
         ChangeNotifierProvider(create: (_) => SearchRepo()),
         ChangeNotifierProvider(create: (_) => DonorRepo()),
         ChangeNotifierProvider(create: (_) => GoogleMapProvider()),
+        ChangeNotifierProvider(create: (_) => StateDistrictProvider()),
         //ui controllers
         ChangeNotifierProvider(create: (_) => DonorUiController()),
       ],
