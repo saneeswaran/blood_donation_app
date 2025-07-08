@@ -10,7 +10,7 @@ void successSnackBar({required String message, required BuildContext context}) {
       title: Text(
         message,
         style: const TextStyle(
-          color: Colors.white,
+          color: Colors.black,
           fontWeight: FontWeight.w600,
           fontSize: 16,
         ),

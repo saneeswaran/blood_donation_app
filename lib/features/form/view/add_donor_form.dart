@@ -1,12 +1,14 @@
-import 'package:blood_donation/core/color/appcolor.dart';
+import 'package:blood_donation/core/util/util.dart';
 import 'package:blood_donation/features/form/controller/donor_ui_controller.dart';
 import 'package:blood_donation/features/form/controller/google_map_provider.dart';
 import 'package:blood_donation/features/form/view%20model/donor_repo.dart';
 import 'package:blood_donation/features/form/view%20model/state_district_provider.dart';
+import 'package:blood_donation/features/form/widget/location_picker.dart';
+import 'package:blood_donation/features/form/widget/terms_and_conditions.dart';
 import 'package:blood_donation/features/widgets/custom_elevated_button.dart';
 import 'package:blood_donation/features/widgets/custom_snack_bar.dart';
 import 'package:blood_donation/features/widgets/custom_text_formfield.dart';
-import 'package:dropdown_search/dropdown_search.dart';
+import 'package:blood_donation/features/widgets/loader.dart';
 import 'package:flutter/material.dart';
 import 'package:provider/provider.dart';
 
@@ -21,23 +23,32 @@ class _AddDonorFormState extends State<AddDonorForm> {
   final formKey = GlobalKey<FormState>();
   final nameController = TextEditingController();
   final emailController = TextEditingController();
-  final ageController = TextEditingController();
   final phoneNumberController = TextEditingController();
   final dobController = TextEditingController();
+  final addressController = TextEditingController();
 
   @override
   void dispose() {
     nameController.dispose();
     emailController.dispose();
-    ageController.dispose();
     phoneNumberController.dispose();
     dobController.dispose();
+    addressController.dispose();
     super.dispose();
   }
 
   @override
   void initState() {
     super.initState();
+    final googleMapProvider = Provider.of<GoogleMapProvider>(
+      context,
+      listen: false,
+    );
+
+    googleMapProvider.getCurrentLocation().then((_) {
+      addressController.text = googleMapProvider.address;
+    });
+
     context.read<StateDistrictProvider>().loadStateDistrictData();
   }
 
@@ -71,24 +82,52 @@ class _AddDonorFormState extends State<AddDonorForm> {
                   hintText: "Email",
                   controller: emailController,
                 ),
-                CustomTextFormfield(
-                  hintText: "Age",
-                  controller: ageController,
-                  keyboardType: TextInputType.number,
-                ),
+                donorUI.dobPicker(controller: dobController),
                 CustomTextFormfield(
                   hintText: "+91 Phone Number",
                   controller: phoneNumberController,
                   keyboardType: TextInputType.phone,
+                  maxLength: 10,
                 ),
                 donorUI.bloodType(),
                 donorUI.cronicDisease(),
                 donorUI.genderDropDown(),
-                donorUI.dobPicker(controller: dobController),
-                stateDropDownButton(),
-                _district(),
-                const SizedBox(height: 10),
+                _stateAndDiscrict(size: size),
+                CustomTextFormfield(
+                  hintText: "Address",
+                  controller: addressController,
+                  maxLines: 5,
+                ),
+                Row(
+                  children: [
+                    donorUI.termsAndConditions(),
+                    TextButton(
+                      onPressed: () =>
+                          navigateTo(context, const TermsAndConditions()),
+                      child: const Text(
+                        "Terms and Conditions",
+                        style: TextStyle(
+                          color: Colors.black,
+                          fontSize: 14,
+                          fontWeight: FontWeight.bold,
+                        ),
+                      ),
+                    ),
+                  ],
+                ),
                 const SizedBox(height: 20),
+                SizedBox(
+                  height: size.height * 0.07,
+                  width: size.width * 1,
+                  child: CustomElevatedButton(
+                    onPressed: () =>
+                        navigateTo(context, const LocationPickerScreen()),
+                    child: const Text(
+                      "Pick Location",
+                      style: TextStyle(color: Colors.white, fontSize: 18),
+                    ),
+                  ),
+                ),
                 SizedBox(
                   width: size.width,
                   height: size.height * 0.07,
@@ -123,17 +162,42 @@ class _AddDonorFormState extends State<AddDonorForm> {
                                       );
                                       return;
                                     }
+                                    if (googleMapProvider.address.isEmpty ||
+                                        googleMapProvider.latitude == null ||
+                                        googleMapProvider.longitude == null) {
+                                      failedSnackBar(
+                                        message: "Please select location",
+                                        context: context,
+                                      );
+                                      return;
+                                    }
+                                    if (!uiController.isAccepted) {
+                                      failedSnackBar(
+                                        message:
+                                            "Please accept terms and conditions",
+                                        context: context,
+                                      );
+                                      return;
+                                    }
+                                    final calculatedAge = uiController
+                                        .calculateAge(
+                                          uiController.selectedDate!,
+                                        );
+                                    if (calculatedAge < 18) {
+                                      failedSnackBar(
+                                        message:
+                                            "Age should be greater than 18",
+                                        context: context,
+                                      );
+                                      return;
+                                    }
 
                                     final isSuccess = await provider.addDonor(
                                       context: context,
                                       name: nameController.text.trim(),
-                                      age:
-                                          int.tryParse(
-                                            ageController.text.trim(),
-                                          ) ??
-                                          0,
                                       gender: uiController.gender!,
                                       dob: uiController.selectedDate!,
+                                      age: calculatedAge,
                                       bloodGroup: uiController.bloodTypeValue!,
                                       phone: phoneNumberController.text.trim(),
                                       email: emailController.text.trim(),
@@ -154,16 +218,19 @@ class _AddDonorFormState extends State<AddDonorForm> {
                                             "You have successfully become a Donor",
                                         context: context,
                                       );
+                                      Navigator.pop(context);
                                     }
                                   }
                                 },
-                                child: const Text(
-                                  "Submit",
-                                  style: TextStyle(
-                                    color: Colors.white,
-                                    fontSize: 18,
-                                  ),
-                                ),
+                                child: provider.isLoading
+                                    ? const Loader()
+                                    : const Text(
+                                        "Submit",
+                                        style: TextStyle(
+                                          color: Colors.white,
+                                          fontSize: 18,
+                                        ),
+                                      ),
                               );
                             },
                       ),
@@ -177,90 +244,11 @@ class _AddDonorFormState extends State<AddDonorForm> {
     );
   }
 
-  Widget stateDropDownButton() {
-    return Consumer<StateDistrictProvider>(
-      builder: (context, provider, child) {
-        return DropdownSearch<String>(
-          selectedItem: provider.selectedState,
-          items: (filter, loadProps) {
-            if (filter.isEmpty) {
-              return provider.states;
-            } else {
-              return provider.states
-                  .where(
-                    (element) =>
-                        element.toLowerCase().contains(filter.toLowerCase()),
-                  )
-                  .toList();
-            }
-          },
-          popupProps: const PopupProps.menu(showSearchBox: true),
-          onChanged: (value) => provider.setSelectedState(value),
-          decoratorProps: DropDownDecoratorProps(
-            decoration: InputDecoration(
-              filled: true,
-              fillColor: Appcolor.lightGrey,
-              hintText: "Select State",
-              enabledBorder: OutlineInputBorder(
-                borderRadius: BorderRadius.circular(10),
-                borderSide: const BorderSide(color: Appcolor.lightGrey),
-              ),
-              focusedBorder: OutlineInputBorder(
-                borderSide: const BorderSide(color: Appcolor.lightGrey),
-                borderRadius: BorderRadius.circular(10),
-              ),
-              errorBorder: OutlineInputBorder(
-                borderRadius: BorderRadius.circular(10),
-                borderSide: const BorderSide(color: Colors.red),
-              ),
-            ),
-          ),
-        );
-      },
-    );
-  }
-
-  Widget _district() {
-    return Consumer<StateDistrictProvider>(
-      builder: (context, provider, child) {
-        return DropdownSearch<String>(
-          selectedItem: provider.selectedDistrict,
-          items: (filter, _) {
-            if (filter.isEmpty) {
-              return provider.districts;
-            } else {
-              return provider.districts
-                  .where((e) => e.toLowerCase().contains(filter.toLowerCase()))
-                  .toList();
-            }
-          },
-          popupProps: const PopupProps.menu(showSearchBox: true),
-          onChanged: (value) => provider.setSelectedDistrict(value),
-          decoratorProps: DropDownDecoratorProps(
-            decoration: InputDecoration(
-              hintText: "Select District",
-              fillColor: Appcolor.lightGrey,
-              filled: true,
-              border: OutlineInputBorder(
-                borderRadius: BorderRadius.circular(10),
-                borderSide: const BorderSide(color: Appcolor.lightGrey),
-              ),
-              enabledBorder: OutlineInputBorder(
-                borderRadius: BorderRadius.circular(10),
-                borderSide: const BorderSide(color: Appcolor.lightGrey),
-              ),
-              focusedBorder: OutlineInputBorder(
-                borderSide: const BorderSide(color: Appcolor.lightGrey),
-                borderRadius: BorderRadius.circular(10),
-              ),
-              errorBorder: OutlineInputBorder(
-                borderRadius: BorderRadius.circular(10),
-                borderSide: const BorderSide(color: Colors.red),
-              ),
-            ),
-          ),
-        );
-      },
+  Widget _stateAndDiscrict({required Size size}) {
+    final provider = Provider.of<StateDistrictProvider>(context, listen: false);
+    return Column(
+      spacing: size.height * 0.02,
+      children: [provider.stateDropDownButton(), provider.district()],
     );
   }
 }

@@ -9,7 +9,6 @@ class GoogleMapProvider with ChangeNotifier {
   LatLng? currentPosition;
   LatLng? pickedPosition;
   String address = "";
-  bool isLoading = false;
   int? pincode;
   double? _latitude;
   double? _longitude;
@@ -18,14 +17,10 @@ class GoogleMapProvider with ChangeNotifier {
 
   Future<void> getCurrentLocation() async {
     try {
-      isLoading = true;
-      notifyListeners();
-
       // Request permission using permission_handler
       PermissionStatus permissionStatus = await Permission.location.request();
       if (!permissionStatus.isGranted) {
         address = "Location permission not granted.";
-        isLoading = false;
         notifyListeners();
         return;
       }
@@ -37,7 +32,6 @@ class GoogleMapProvider with ChangeNotifier {
         serviceEnabled = await location.requestService();
         if (!serviceEnabled) {
           address = "Location services are disabled.";
-          isLoading = false;
           notifyListeners();
           return;
         }
@@ -55,9 +49,6 @@ class GoogleMapProvider with ChangeNotifier {
       await _getAddressFromLatLng(pickedPosition!);
     } catch (e) {
       address = "Error fetching location.";
-    } finally {
-      isLoading = false;
-      notifyListeners();
     }
   }
 

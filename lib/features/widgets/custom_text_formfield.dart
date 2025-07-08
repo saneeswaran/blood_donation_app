@@ -9,6 +9,7 @@ class CustomTextFormfield extends StatelessWidget {
   final Widget? prefixIcon;
   final TextInputType? keyboardType;
   final int? maxLines;
+  final int? maxLength;
   const CustomTextFormfield({
     super.key,
     required this.hintText,
@@ -18,6 +19,7 @@ class CustomTextFormfield extends StatelessWidget {
     this.keyboardType,
     this.prefixIcon,
     this.maxLines,
+    this.maxLength,
   });
 
   @override
@@ -25,7 +27,8 @@ class CustomTextFormfield extends StatelessWidget {
     return TextFormField(
       controller: controller,
       obscureText: obScureText ?? false,
-      maxLength: maxLines,
+      maxLines: maxLines,
+      maxLength: maxLength,
       validator: (value) {
         if (value == null || value.isEmpty) {
           return "Please Enter $hintText";

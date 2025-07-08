@@ -87,6 +87,16 @@ class DonorUiController extends ChangeNotifier {
     notifyListeners();
   }
 
+  int calculateAge(DateTime dob) {
+    final today = DateTime.now();
+    int age = today.year - dob.year;
+    if (today.month < dob.month ||
+        (today.month == dob.month && today.day < dob.day)) {
+      age--;
+    }
+    return age;
+  }
+
   //terms and conditions
   bool _isAccepted = false;
 
@@ -114,6 +124,15 @@ class DonorUiController extends ChangeNotifier {
     notifyListeners();
   }
 
+  //terms and conditions
+  bool _accestedTerms = false;
+
+  bool get accestedTerms => _accestedTerms;
+
+  void setAccestedTerms(bool value) {
+    _accestedTerms = value;
+    notifyListeners();
+  }
   //widgets
 
   Widget genderDropDown() {
@@ -241,6 +260,18 @@ class DonorUiController extends ChangeNotifier {
           ),
           items: items,
           onChanged: (value) => provider.setBloodType(value!),
+        );
+      },
+    );
+  }
+
+  Widget termsAndConditions() {
+    return Consumer<DonorUiController>(
+      builder: (context, provider, child) {
+        return Checkbox(
+          value: _isAccepted,
+          onChanged: (value) => provider.setAccepted(value!),
+          activeColor: Appcolor.primaryColor,
         );
       },
     );
