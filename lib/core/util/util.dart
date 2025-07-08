@@ -1,7 +1,10 @@
 import 'dart:io';
+import 'package:blood_donation/features/widgets/custom_snack_bar.dart';
+import 'package:flutter_image_compress/flutter_image_compress.dart';
 import 'package:path/path.dart' as path;
 import 'package:flutter/material.dart';
 import 'package:page_transition/page_transition.dart';
+import 'package:path_provider/path_provider.dart';
 import 'package:permission_handler/permission_handler.dart';
 import 'package:image_picker/image_picker.dart';
 
@@ -57,24 +60,61 @@ String? validateEmail(String? value) {
   }
 }
 
-Future<File> pickImage() async {
-  File? compressedFile;
-  final Permission storage = Permission.storage;
-  final Permission camera = Permission.camera;
+Future<File> pickImage({
+  required BuildContext context,
+  required ImageSource imageSource,
+}) async {
+  File? compressedImage;
+  try {
+    final Permission storage = Permission.storage;
+    final Permission camera = Permission.camera;
 
-  if (await storage.isDenied) {
-    await storage.request();
-  } else if (await storage.isPermanentlyDenied) {
-    await storage.request();
-  }
-  if (await camera.isDenied) {
-    await camera.request();
-  } else if (await camera.isPermanentlyDenied) {
-    await camera.request();
-  }
-  final pickedFile = await ImagePicker().pickImage(source: ImageSource.camera);
-  if (pickedFile == null) return File('');
+    if (await storage.isDenied) {
+      await storage.request();
+    } else if (await storage.isPermanentlyDenied) {
+      await storage.request();
+    }
+    if (await camera.isDenied) {
+      await camera.request();
+    } else if (await camera.isPermanentlyDenied) {
+      await camera.request();
+    }
+    final pickedFile = await ImagePicker().pickImage(source: imageSource);
+    if (pickedFile == null) return File('');
 
-  final originalFile = File(pickedFile.path);
-  final extension = path.extension('${originalFile.path}/');
+    final originalFile = File(pickedFile.path);
+    final extension = path.extension(originalFile.path).toLowerCase();
+
+    final tempDir = await getTemporaryDirectory();
+
+    final fileName =
+        "${DateTime.now().millisecondsSinceEpoch}_${path.basenameWithoutExtension(originalFile.path)}$extension";
+
+    final targetPath = path.join(tempDir.path, fileName);
+
+    CompressFormat format = CompressFormat.png;
+
+    if (extension == '.jpg' || extension == '.jpeg') {
+      format = CompressFormat.jpeg;
+    }
+    final compressed = await FlutterImageCompress.compressAndGetFile(
+      originalFile.path,
+      targetPath,
+      quality: 80,
+      format: format,
+    );
+
+    if (compressed != null) {
+      compressedImage = File(compressed.path);
+    } else {
+      compressedImage = originalFile;
+    }
+
+    return compressedImage;
+  } catch (e) {
+    if (context.mounted) {
+      failedSnackBar(message: e.toString(), context: context);
+    }
+    return File('');
+  }
 }
