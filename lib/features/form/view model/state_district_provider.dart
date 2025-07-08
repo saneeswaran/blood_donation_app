@@ -1,9 +1,7 @@
 import 'dart:convert';
 import 'package:blood_donation/core/constants/constants.dart';
-import 'package:dropdown_search/dropdown_search.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
-import 'package:provider/provider.dart';
 import '../model/state_model.dart';
 
 class StateDistrictProvider extends ChangeNotifier {
@@ -49,29 +47,5 @@ class StateDistrictProvider extends ChangeNotifier {
   void setSelectedDistrict(String? district) {
     _selectedDistrict = district;
     notifyListeners();
-  }
-
-  Widget stateDropDownButton() {
-    return Consumer<StateDistrictProvider>(
-      builder: (context, provider, child) {
-        return DropdownSearch(
-          selectedItem: provider.selectedState,
-          items: (filter, loadProps) {
-            if (filter.isEmpty) {
-              return provider.states;
-            } else {
-              return provider.states
-                  .where(
-                    (element) =>
-                        element.toLowerCase().contains(filter.toLowerCase()),
-                  )
-                  .toList();
-            }
-          },
-          popupProps: const PopupProps.menu(showSearchBox: true),
-          onChanged: (value) => provider.setSelectedState(value),
-        );
-      },
-    );
   }
 }
