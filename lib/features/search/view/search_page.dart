@@ -1,6 +1,8 @@
+import 'package:animations/animations.dart';
 import 'package:blood_donation/core/color/appcolor.dart';
 import 'package:blood_donation/features/form/view%20model/donor_repo.dart';
 import 'package:blood_donation/features/search/view/widget/user_list_template.dart';
+import 'package:blood_donation/features/search/widget/filter/view/filter_donors.dart';
 import 'package:blood_donation/features/widgets/custom_text_formfield.dart';
 import 'package:flutter/material.dart';
 import 'package:provider/provider.dart';
@@ -74,18 +76,29 @@ class _SearchPageState extends State<SearchPage> {
         SizedBox(
           height: size.height * 0.07,
           width: size.width * 0.13,
-          child: IconButton(
-            style: IconButton.styleFrom(
-              backgroundColor: Appcolor.primaryColor,
-              shape: RoundedRectangleBorder(
-                borderRadius: BorderRadiusGeometry.circular(12),
-              ),
+          child: OpenContainer(
+            transitionType: ContainerTransitionType.fadeThrough,
+            transitionDuration: const Duration(milliseconds: 400),
+            closedElevation: 0.0,
+            closedShape: RoundedRectangleBorder(
+              borderRadius: BorderRadius.circular(12),
             ),
-            onPressed: () {},
-            icon: const Icon(
-              Icons.format_list_bulleted_sharp,
-              color: Colors.white,
-            ),
+            openBuilder: (context, closedContainer) => const FilterDonors(),
+            closedBuilder: (context, openContainer) {
+              return IconButton(
+                style: IconButton.styleFrom(
+                  backgroundColor: Appcolor.primaryColor,
+                  shape: RoundedRectangleBorder(
+                    borderRadius: BorderRadiusGeometry.circular(12),
+                  ),
+                ),
+                onPressed: openContainer,
+                icon: const Icon(
+                  Icons.format_list_bulleted_sharp,
+                  color: Colors.white,
+                ),
+              );
+            },
           ),
         ),
       ],
