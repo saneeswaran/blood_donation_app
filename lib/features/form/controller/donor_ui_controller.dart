@@ -306,4 +306,14 @@ class DonorUiController extends ChangeNotifier {
       ),
     );
   }
+
+  //filter
+  int _selectedBloodTypeIndex = 0;
+
+  int get selectedBloodTypeIndex => _selectedBloodTypeIndex;
+
+  void setSelectedBloodTypeIndex(int index) {
+    _selectedBloodTypeIndex = index;
+    notifyListeners();
+  }
 }
