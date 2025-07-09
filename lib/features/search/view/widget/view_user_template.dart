@@ -1,15 +1,17 @@
 // ignore_for_file: deprecated_member_use
 
 import 'package:blood_donation/core/color/appcolor.dart';
+import 'package:blood_donation/core/util/launch_helper.dart';
+import 'package:blood_donation/features/form/model/donor_model.dart';
 import 'package:blood_donation/features/search/view%20model/search_repo.dart';
-import 'package:blood_donation/features/search/view/widget/user_list_template.dart';
 import 'package:blood_donation/features/widgets/custom_elevated_button.dart';
 import 'package:cached_network_image/cached_network_image.dart';
 import 'package:flutter/material.dart';
 import 'package:provider/provider.dart';
 
 class ViewUserTemplate extends StatefulWidget {
-  const ViewUserTemplate({super.key});
+  final DonorModel donor;
+  const ViewUserTemplate({super.key, required this.donor});
 
   @override
   State<ViewUserTemplate> createState() => _ViewUserTemplateState();
@@ -55,7 +57,11 @@ class _ViewUserTemplateState extends State<ViewUserTemplate> {
                           height: size.height * 0.07,
                           width: size.width * 0.4,
                           child: CustomElevatedButton(
-                            onPressed: () {},
+                            onPressed: () {
+                              LaunchHelper.launchMobileNumber(
+                                number: widget.donor.phone,
+                              );
+                            },
                             child: const Text(
                               "Call",
                               style: TextStyle(color: Colors.white),
@@ -93,18 +99,18 @@ class _ViewUserTemplateState extends State<ViewUserTemplate> {
         spacing: 12,
         children: [
           //image
-          const Center(
+          Center(
             child: CircleAvatar(
               radius: 60,
               backgroundImage: CachedNetworkImageProvider(
-                "https://cdn.hero.page/pfp/8ff73a9f-2f4b-4b7e-b5c2-bcf085d192f6-chibi-anime-girl-portrait-cute-anime-profile-pictures-for-girls-1.png",
+                widget.donor.imageUrl,
               ),
             ),
           ),
-          const Center(
+          Center(
             child: Text(
-              "UserName",
-              style: TextStyle(fontSize: 22, fontWeight: FontWeight.bold),
+              widget.donor.name,
+              style: const TextStyle(fontSize: 22, fontWeight: FontWeight.bold),
             ),
           ),
           const Center(
@@ -118,16 +124,17 @@ class _ViewUserTemplateState extends State<ViewUserTemplate> {
             mainAxisAlignment: MainAxisAlignment.spaceEvenly,
             children: [
               _customContainer(size: size, title: "Donated", value: "06"),
-              _customContainer(size: size, title: "Blood Type", value: "A-"),
-              _customContainer(size: size, title: "Age", value: "20"),
+              _customContainer(
+                size: size,
+                title: "Blood Type",
+                value: widget.donor.bloodGroup,
+              ),
+              _customContainer(
+                size: size,
+                title: "Age",
+                value: widget.donor.age.toString(),
+              ),
             ],
-          ),
-          Expanded(
-            child: SizedBox(
-              height: size.height * 0.7,
-              width: size.width * 1,
-              child: const UserListTemplate(),
-            ),
           ),
         ],
       ),

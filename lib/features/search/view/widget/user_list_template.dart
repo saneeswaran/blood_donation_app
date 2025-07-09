@@ -49,7 +49,7 @@ class UserListTemplate extends StatelessWidget {
                     ),
                     child: ListTile(
                       onTap: () =>
-                          navigateTo(context, const ViewUserTemplate()),
+                          navigateTo(context, ViewUserTemplate(donor: donors)),
                       leading: CircleAvatar(
                         radius: 30,
                         backgroundImage: CachedNetworkImageProvider(
