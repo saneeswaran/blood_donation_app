@@ -1,7 +1,7 @@
-// ignore_for_file: deprecated_member_use
-
 import 'package:blood_donation/core/color/appcolor.dart';
 import 'package:blood_donation/core/util/launch_helper.dart';
+import 'package:blood_donation/core/util/photo_viewer.dart';
+import 'package:blood_donation/core/util/util.dart';
 import 'package:blood_donation/features/form/model/donor_model.dart';
 import 'package:blood_donation/features/search/view%20model/search_repo.dart';
 import 'package:blood_donation/features/widgets/custom_elevated_button.dart';
@@ -90,20 +90,30 @@ class _ViewUserTemplateState extends State<ViewUserTemplate> {
       appBar: AppBar(
         backgroundColor: Appcolor.scaffoldBackgroundColor,
         centerTitle: true,
-        title: const Text(
-          "UserName",
-          style: TextStyle(color: Colors.black, fontWeight: FontWeight.bold),
+        title: Text(
+          widget.donor.name,
+          style: const TextStyle(
+            color: Colors.black,
+            fontWeight: FontWeight.bold,
+          ),
         ),
       ),
       body: Column(
         spacing: 12,
         children: [
+          const SizedBox(height: 20),
           //image
           Center(
-            child: CircleAvatar(
-              radius: 60,
-              backgroundImage: CachedNetworkImageProvider(
-                widget.donor.imageUrl,
+            child: GestureDetector(
+              onTap: () => justNavigate(
+                context: context,
+                route: PhotoViewer(imageUrl: widget.donor.imageUrl),
+              ),
+              child: CircleAvatar(
+                radius: 60,
+                backgroundImage: CachedNetworkImageProvider(
+                  widget.donor.imageUrl,
+                ),
               ),
             ),
           ),

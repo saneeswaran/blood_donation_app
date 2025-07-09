@@ -1,4 +1,5 @@
 import 'package:blood_donation/core/color/appcolor.dart';
+import 'package:blood_donation/core/util/photo_viewer.dart';
 import 'package:blood_donation/core/util/util.dart';
 import 'package:blood_donation/features/form/view%20model/donor_repo.dart';
 import 'package:blood_donation/features/search/view/widget/view_user_template.dart';
@@ -50,10 +51,16 @@ class UserListTemplate extends StatelessWidget {
                     child: ListTile(
                       onTap: () =>
                           navigateTo(context, ViewUserTemplate(donor: donors)),
-                      leading: CircleAvatar(
-                        radius: 30,
-                        backgroundImage: CachedNetworkImageProvider(
-                          donors.imageUrl,
+                      leading: GestureDetector(
+                        onTap: () => justNavigate(
+                          context: context,
+                          route: PhotoViewer(imageUrl: donors.imageUrl),
+                        ),
+                        child: CircleAvatar(
+                          radius: 30,
+                          backgroundImage: CachedNetworkImageProvider(
+                            donors.imageUrl,
+                          ),
                         ),
                       ),
                       title: Text(

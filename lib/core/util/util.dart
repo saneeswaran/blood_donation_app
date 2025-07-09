@@ -28,6 +28,10 @@ void navigateAndFinish(context, widget) => Navigator.pushAndRemoveUntil(
   (route) => false,
 );
 
+void justNavigate({required BuildContext context, required Widget route}) {
+  Navigator.push(context, MaterialPageRoute(builder: (context) => route));
+}
+
 void dialog({
   required BuildContext context,
   required String title,
