@@ -19,7 +19,6 @@ class DonorModel {
   final String state;
   final bool acceptedTerms;
   final String imageUrl;
-  final Timestamp? becomeADonorDate = Timestamp.now();
   DonorModel({
     required this.name,
     this.id,
@@ -37,6 +36,7 @@ class DonorModel {
     required this.acceptedTerms,
     required this.imageUrl,
   });
+  final Timestamp? becomeADonorDate = Timestamp.now();
 
   Map<String, dynamic> toMap() {
     return <String, dynamic>{
@@ -55,7 +55,6 @@ class DonorModel {
       'state': state,
       'acceptedTerms': acceptedTerms,
       'imageUrl': imageUrl,
-      'becomeADonorDate': becomeADonorDate,
     };
   }
 

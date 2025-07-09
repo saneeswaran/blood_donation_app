@@ -102,7 +102,7 @@ class DonorRepo extends ChangeNotifier {
       setLoading(true);
       final QuerySnapshot querySnapshot = await collectionReference.get();
       _allDonor = querySnapshot.docs
-          .map((e) => DonorModel.fromMap(e as Map<String, dynamic>))
+          .map((e) => DonorModel.fromMap(e.data() as Map<String, dynamic>))
           .toList();
       _filterDonor = _allDonor;
       setLoading(false);
