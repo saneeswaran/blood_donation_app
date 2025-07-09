@@ -1,3 +1,5 @@
+import 'dart:developer';
+
 import 'package:blood_donation/core/color/appcolor.dart';
 import 'package:blood_donation/core/util/util.dart';
 import 'package:blood_donation/features/form/controller/donor_ui_controller.dart';
@@ -56,15 +58,16 @@ class _FilterDonorsState extends State<FilterDonors> {
                     final bloodType = bloodTypes[index];
                     final isSelected = provider.selectedBloodTypeIndex == index;
                     return GestureDetector(
-                      onTap: () => provider.setSelectedBloodTypeIndex(index),
+                      onTap: () {
+                        provider.setSelectedBloodTypeIndex(index);
+                        provider.setBloodType(bloodTypes[index]);
+                      },
                       child: Container(
                         height: size.height * 0.1,
                         width: size.width * 0.2,
                         decoration: BoxDecoration(
                           shape: BoxShape.circle,
-                          color: isSelected
-                              ? Appcolor.lightGrey
-                              : Appcolor.lightGrey,
+                          color: Appcolor.lightGrey,
                           border: Border.all(
                             color: isSelected
                                 ? Appcolor.primaryColor
@@ -128,6 +131,11 @@ class _FilterDonorsState extends State<FilterDonors> {
                     builder: (context, donorRepo, state, uiController, child) {
                       return CustomElevatedButton(
                         onPressed: () {
+                          log(
+                            "Selected Blood Type: ${uiController.bloodTypeValue}",
+                          );
+                          log("Selected State: ${state.selectedState}");
+                          log("Selected District: ${state.selectedDistrict}");
                           if (uiController.bloodTypeValue == null ||
                               state.selectedState == null ||
                               state.selectedDistrict == null) {
@@ -137,7 +145,6 @@ class _FilterDonorsState extends State<FilterDonors> {
                             );
                             return;
                           }
-
                           final DonorModel donorModel = DonorModel(
                             donorId: '',
                             name: '',
