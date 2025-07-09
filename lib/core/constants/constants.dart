@@ -49,3 +49,8 @@ By registering as a donor in the Blood Donation App, you agree to the following 
 - The app acts only as a platform to connect donors and recipients and is not responsible for the outcome of donations or medical events.
 ''';
 }
+
+class CloudinaryData {
+  static const String cloudName = "deuaphtcj";
+  static const String cloudinaryPreset = "nqzytt5x";
+}

@@ -1,6 +1,8 @@
 // ignore_for_file: public_member_api_docs, sort_constructors_first
 import 'dart:convert';
 
+import 'package:cloud_firestore/cloud_firestore.dart';
+
 class DonorModel {
   final String name;
   final String? id;
@@ -15,8 +17,9 @@ class DonorModel {
   final String address;
   final String city;
   final String state;
-  final String hasChronicDisease;
   final bool acceptedTerms;
+  final String imageUrl;
+  final Timestamp? becomeADonorDate = Timestamp.now();
   DonorModel({
     required this.name,
     this.id,
@@ -31,8 +34,8 @@ class DonorModel {
     required this.address,
     required this.city,
     required this.state,
-    required this.hasChronicDisease,
     required this.acceptedTerms,
+    required this.imageUrl,
   });
 
   Map<String, dynamic> toMap() {
@@ -50,8 +53,9 @@ class DonorModel {
       'address': address,
       'city': city,
       'state': state,
-      'hasChronicDisease': hasChronicDisease,
       'acceptedTerms': acceptedTerms,
+      'imageUrl': imageUrl,
+      'becomeADonorDate': becomeADonorDate,
     };
   }
 
@@ -70,8 +74,8 @@ class DonorModel {
       address: map['address'] as String,
       city: map['city'] as String,
       state: map['state'] as String,
-      hasChronicDisease: map['hasChronicDisease'] as String,
       acceptedTerms: map['acceptedTerms'] as bool,
+      imageUrl: map['imageUrl'] as String,
     );
   }
 

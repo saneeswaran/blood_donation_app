@@ -1,3 +1,4 @@
+import 'package:blood_donation/core/color/appcolor.dart';
 import 'package:blood_donation/core/util/util.dart';
 import 'package:blood_donation/features/form/controller/donor_ui_controller.dart';
 import 'package:blood_donation/features/form/controller/google_map_provider.dart';
@@ -73,7 +74,40 @@ class _AddDonorFormState extends State<AddDonorForm> {
                     style: TextStyle(fontSize: 22, fontWeight: FontWeight.bold),
                   ),
                 ),
-                const SizedBox(height: 20),
+                Center(
+                  child: GestureDetector(
+                    onTap: () {
+                      donorUI.showDialog(context: context, size: size);
+                    },
+                    child: Container(
+                      height: size.height * 0.20,
+                      width: size.width * 0.6,
+                      decoration: donorUI.imageFile == null
+                          ? const BoxDecoration(
+                              color: Appcolor.lightGrey,
+                              shape: BoxShape.circle,
+                            )
+                          : BoxDecoration(
+                              shape: BoxShape.circle,
+                              image: DecorationImage(
+                                image: FileImage(donorUI.imageFile!),
+                                fit: BoxFit.cover,
+                              ),
+                            ),
+                      child: const Center(
+                        child: Text(
+                          "Please select\n your image",
+                          textAlign: TextAlign.center,
+                          style: TextStyle(
+                            color: Colors.black,
+                            fontSize: 14,
+                            fontWeight: FontWeight.bold,
+                          ),
+                        ),
+                      ),
+                    ),
+                  ),
+                ),
                 CustomTextFormfield(
                   hintText: "Name",
                   controller: nameController,
@@ -90,7 +124,7 @@ class _AddDonorFormState extends State<AddDonorForm> {
                   maxLength: 10,
                 ),
                 donorUI.bloodType(),
-                donorUI.cronicDisease(),
+                //  donorUI.cronicDisease(),
                 donorUI.genderDropDown(),
                 _stateAndDiscrict(size: size),
                 CustomTextFormfield(
@@ -191,6 +225,13 @@ class _AddDonorFormState extends State<AddDonorForm> {
                                       );
                                       return;
                                     }
+                                    if (donorUI.imageFile == null) {
+                                      failedSnackBar(
+                                        message: "Please select image",
+                                        context: context,
+                                      );
+                                      return;
+                                    }
 
                                     final isSuccess = await provider.addDonor(
                                       context: context,
@@ -207,8 +248,7 @@ class _AddDonorFormState extends State<AddDonorForm> {
                                           .selectedDistrict!,
                                       state:
                                           stateDistrictProvider.selectedState!,
-                                      hasChronicDisease:
-                                          uiController.hasChronicDiseaseValue!,
+                                      image: donorUI.imageFile!,
                                       acceptedTerms: uiController.isAccepted,
                                     );
 

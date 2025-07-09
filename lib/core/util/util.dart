@@ -36,6 +36,7 @@ void dialog({
   showDialog(
     context: context,
     builder: (context) => AlertDialog(
+      backgroundColor: Colors.white,
       title: Text(
         title,
         style: const TextStyle(
@@ -60,7 +61,7 @@ String? validateEmail(String? value) {
   }
 }
 
-Future<File> pickImage({
+Future<File> imagePickerFromSource({
   required BuildContext context,
   required ImageSource imageSource,
 }) async {

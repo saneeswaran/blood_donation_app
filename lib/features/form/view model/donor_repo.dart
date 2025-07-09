@@ -1,6 +1,10 @@
+import 'dart:io';
+
+import 'package:blood_donation/core/constants/constants.dart';
 import 'package:blood_donation/features/form/model/donor_model.dart';
 import 'package:blood_donation/features/widgets/custom_snack_bar.dart';
 import 'package:cloud_firestore/cloud_firestore.dart';
+import 'package:cloudinary_public/cloudinary_public.dart';
 import 'package:firebase_auth/firebase_auth.dart';
 import 'package:flutter/material.dart';
 
@@ -36,15 +40,28 @@ class DonorRepo extends ChangeNotifier {
     required String address,
     required String city,
     required String state,
-    required String hasChronicDisease,
     required bool acceptedTerms,
     required String bloodType,
+    required File image,
   }) async {
     try {
       setLoading(true);
       final docRef = collectionReference.doc();
+      //upload images
+      CloudinaryPublic cloudinaryPublic = CloudinaryPublic(
+        CloudinaryData.cloudName,
+        CloudinaryData.cloudinaryPreset,
+      );
+      CloudinaryResponse response = await cloudinaryPublic.uploadFile(
+        CloudinaryFile.fromFile(
+          image.path,
+          resourceType: CloudinaryResourceType.Image,
+        ),
+      );
+      final imageUrl = response.secureUrl;
       //donor model
       final DonorModel donorModel = DonorModel(
+        imageUrl: imageUrl,
         id: docRef.id,
         donorId: getCurrentUser(),
         bloodType: bloodType,
@@ -58,7 +75,6 @@ class DonorRepo extends ChangeNotifier {
         address: address,
         city: city,
         state: state,
-        hasChronicDisease: hasChronicDisease,
         acceptedTerms: acceptedTerms,
       );
 
@@ -136,8 +152,8 @@ class DonorRepo extends ChangeNotifier {
     required String city,
     required String state,
     required String pinCode,
-    required String hasChronicDisease,
     required bool acceptedTerms,
+    required File image,
   }) async {
     try {
       setLoading(true);
@@ -145,7 +161,20 @@ class DonorRepo extends ChangeNotifier {
       final doc = await collectionReference
           .where("donorId", isEqualTo: donorId)
           .get();
+      //upload images
+      CloudinaryPublic cloudinaryPublic = CloudinaryPublic(
+        CloudinaryData.cloudName,
+        CloudinaryData.cloudinaryPreset,
+      );
+      CloudinaryResponse response = await cloudinaryPublic.uploadFile(
+        CloudinaryFile.fromFile(
+          image.path,
+          resourceType: CloudinaryResourceType.Image,
+        ),
+      );
+      final imageUrl = response.secureUrl;
       final DonorModel donorModel = DonorModel(
+        imageUrl: imageUrl,
         name: name,
         bloodType: bloodType,
         donorId: donorId,
@@ -158,7 +187,6 @@ class DonorRepo extends ChangeNotifier {
         address: address,
         city: city,
         state: state,
-        hasChronicDisease: hasChronicDisease,
         acceptedTerms: acceptedTerms,
       );
       await doc.docs.first.reference.update(donorModel.toMap());

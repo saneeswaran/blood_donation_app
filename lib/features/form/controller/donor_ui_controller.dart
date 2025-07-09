@@ -1,11 +1,14 @@
 import 'dart:convert';
+import 'dart:io';
 
 import 'package:blood_donation/core/color/appcolor.dart';
 import 'package:blood_donation/core/constants/constants.dart';
+import 'package:blood_donation/core/util/util.dart';
 import 'package:blood_donation/features/form/model/state_model.dart';
 import 'package:blood_donation/features/widgets/custom_text_formfield.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
+import 'package:image_picker/image_picker.dart';
 import 'package:provider/provider.dart';
 
 class DonorUiController extends ChangeNotifier {
@@ -21,17 +24,6 @@ class DonorUiController extends ChangeNotifier {
 
   void setBloodType(String value) {
     _bloodType = value;
-    notifyListeners();
-  }
-
-  //has croncic disease
-  List<String> hasChronicDisease = ['Yes', 'No'];
-  String? _chronicDisease;
-
-  String? get hasChronicDiseaseValue => _chronicDisease;
-
-  void setChronicDisease(String value) {
-    _chronicDisease = value;
     notifyListeners();
   }
 
@@ -133,6 +125,28 @@ class DonorUiController extends ChangeNotifier {
     _accestedTerms = value;
     notifyListeners();
   }
+
+  //images
+  File? _imageFile;
+  File? get imageFile => _imageFile;
+
+  void pickImageFromCamera({required BuildContext context}) async {
+    final pickedFile = await imagePickerFromSource(
+      context: context,
+      imageSource: ImageSource.camera,
+    );
+    _imageFile = pickedFile;
+    notifyListeners();
+  }
+
+  void pickImagefromGallery({required BuildContext context}) async {
+    final pickedFile = await imagePickerFromSource(
+      context: context,
+      imageSource: ImageSource.gallery,
+    );
+    _imageFile = pickedFile;
+    notifyListeners();
+  }
   //widgets
 
   Widget genderDropDown() {
@@ -162,40 +176,6 @@ class DonorUiController extends ChangeNotifier {
           ),
           items: items,
           onChanged: (value) => provider.setGender(value!),
-        );
-      },
-    );
-  }
-
-  Widget cronicDisease() {
-    return Consumer<DonorUiController>(
-      builder: (context, provider, child) {
-        final items = provider.hasChronicDisease
-            .map((e) => DropdownMenuItem(value: e, child: Text(e)))
-            .toList();
-        return DropdownButtonFormField(
-          hint: const Text(
-            "Has Chronic Disease ?",
-            style: TextStyle(color: Colors.grey),
-          ),
-          decoration: InputDecoration(
-            filled: true,
-            fillColor: Appcolor.lightGrey,
-            enabledBorder: OutlineInputBorder(
-              borderRadius: BorderRadius.circular(10),
-              borderSide: const BorderSide(color: Appcolor.lightGrey),
-            ),
-            focusedBorder: OutlineInputBorder(
-              borderSide: const BorderSide(color: Appcolor.lightGrey),
-              borderRadius: BorderRadius.circular(10),
-            ),
-            errorBorder: OutlineInputBorder(
-              borderRadius: BorderRadius.circular(10),
-              borderSide: const BorderSide(color: Colors.red),
-            ),
-          ),
-          items: items,
-          onChanged: (value) => provider.setChronicDisease(value!),
         );
       },
     );
@@ -274,6 +254,54 @@ class DonorUiController extends ChangeNotifier {
           activeColor: Appcolor.primaryColor,
         );
       },
+    );
+  }
+
+  //dialog
+  void showDialog({required BuildContext context, required Size size}) {
+    dialog(
+      context: context,
+      title: "Select Image",
+      content: Container(
+        color: Colors.white,
+        height: size.height * 0.17,
+        width: size.width * 0.8,
+        child: Column(
+          children: [
+            ListTile(
+              leading: const Icon(
+                Icons.camera_alt,
+                color: Appcolor.mediaiuGrey,
+              ),
+              onTap: () {
+                pickImageFromCamera(context: context);
+              },
+              title: const Text(
+                "Camera",
+                style: TextStyle(
+                  color: Colors.black,
+                  fontSize: 14,
+                  fontWeight: FontWeight.bold,
+                ),
+              ),
+            ),
+            ListTile(
+              leading: const Icon(Icons.photo, color: Appcolor.mediaiuGrey),
+              title: const Text(
+                "Gallery",
+                style: TextStyle(
+                  color: Colors.black,
+                  fontSize: 14,
+                  fontWeight: FontWeight.bold,
+                ),
+              ),
+              onTap: () {
+                pickImagefromGallery(context: context);
+              },
+            ),
+          ],
+        ),
+      ),
     );
   }
 }
