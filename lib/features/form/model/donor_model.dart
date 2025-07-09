@@ -6,7 +6,6 @@ import 'package:cloud_firestore/cloud_firestore.dart';
 class DonorModel {
   final String name;
   final String? id;
-  final String bloodType;
   final String donorId;
   final int age;
   final String gender;
@@ -22,7 +21,6 @@ class DonorModel {
   DonorModel({
     required this.name,
     this.id,
-    required this.bloodType,
     required this.donorId,
     required this.age,
     required this.gender,
@@ -42,7 +40,6 @@ class DonorModel {
     return <String, dynamic>{
       'name': name,
       'id': id,
-      'bloodType': bloodType,
       'donorId': donorId,
       'age': age,
       'gender': gender,
@@ -62,7 +59,6 @@ class DonorModel {
     return DonorModel(
       name: map['name'] as String,
       id: map['id'] != null ? map['id'] as String : null,
-      bloodType: map['bloodType'] as String,
       donorId: map['donorId'] as String,
       age: map['age'] as int,
       gender: map['gender'] as String,

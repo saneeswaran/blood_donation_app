@@ -67,7 +67,6 @@ class DonorRepo extends ChangeNotifier {
         imageUrl: imageUrl,
         id: docRef.id,
         donorId: getCurrentUser(),
-        bloodType: bloodType,
         name: name,
         age: age,
         gender: gender,
@@ -179,7 +178,6 @@ class DonorRepo extends ChangeNotifier {
       final DonorModel donorModel = DonorModel(
         imageUrl: imageUrl,
         name: name,
-        bloodType: bloodType,
         donorId: donorId,
         age: age,
         gender: gender,
@@ -206,5 +204,37 @@ class DonorRepo extends ChangeNotifier {
       }
     }
     return false;
+  }
+
+  List<DonorModel> filterDonorByModel({required DonorModel donor}) {
+    _filterDonor = _allDonor
+        .where(
+          (e) =>
+              e.bloodGroup.toLowerCase().contains(
+                donor.bloodGroup.toLowerCase(),
+              ) ||
+              e.state.toLowerCase().contains(donor.state.toLowerCase()) ||
+              e.city.toLowerCase().contains(donor.city.toLowerCase()),
+        )
+        .toList();
+
+    notifyListeners();
+    return _filterDonor;
+  }
+
+  List<DonorModel> filterWithRestricedByModel({required DonorModel donor}) {
+    _filterDonor = _allDonor
+        .where(
+          (e) =>
+              e.bloodGroup.toLowerCase().contains(
+                donor.bloodGroup.toLowerCase(),
+              ) &&
+              e.state.toLowerCase().contains(donor.state.toLowerCase()) &&
+              e.city.toLowerCase().contains(donor.city.toLowerCase()),
+        )
+        .toList();
+
+    notifyListeners();
+    return _filterDonor;
   }
 }
