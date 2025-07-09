@@ -74,7 +74,6 @@ class _SignUpPageState extends State<SignUpPage> {
                       hintText: "Password",
                       controller: passwordController,
                       obScureText: !provider.isShowPassword,
-
                       suffixIcon: IconButton(
                         onPressed: () => provider.showPassword(),
                         icon: Icon(

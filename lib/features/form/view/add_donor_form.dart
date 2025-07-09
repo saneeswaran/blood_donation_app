@@ -79,32 +79,38 @@ class _AddDonorFormState extends State<AddDonorForm> {
                     onTap: () {
                       donorUI.showDialog(context: context, size: size);
                     },
-                    child: Container(
-                      height: size.height * 0.20,
-                      width: size.width * 0.6,
-                      decoration: donorUI.imageFile == null
-                          ? const BoxDecoration(
-                              color: Appcolor.lightGrey,
-                              shape: BoxShape.circle,
-                            )
-                          : BoxDecoration(
-                              shape: BoxShape.circle,
-                              image: DecorationImage(
-                                image: FileImage(donorUI.imageFile!),
-                                fit: BoxFit.cover,
-                              ),
-                            ),
-                      child: const Center(
-                        child: Text(
-                          "Please select\n your image",
-                          textAlign: TextAlign.center,
-                          style: TextStyle(
-                            color: Colors.black,
-                            fontSize: 14,
-                            fontWeight: FontWeight.bold,
-                          ),
-                        ),
-                      ),
+                    child: Consumer<DonorUiController>(
+                      builder: (context, provider, child) {
+                        return Container(
+                          height: size.height * 0.20,
+                          width: size.width * 0.6,
+                          decoration: provider.imageFile == null
+                              ? const BoxDecoration(
+                                  color: Appcolor.lightGrey,
+                                  shape: BoxShape.circle,
+                                )
+                              : BoxDecoration(
+                                  shape: BoxShape.circle,
+                                  image: DecorationImage(
+                                    image: FileImage(provider.imageFile!),
+                                    fit: BoxFit.cover,
+                                  ),
+                                ),
+                          child: provider.imageFile == null
+                              ? const Center(
+                                  child: Text(
+                                    "Please select\n your image",
+                                    textAlign: TextAlign.center,
+                                    style: TextStyle(
+                                      color: Colors.black,
+                                      fontSize: 14,
+                                      fontWeight: FontWeight.bold,
+                                    ),
+                                  ),
+                                )
+                              : null,
+                        );
+                      },
                     ),
                   ),
                 ),

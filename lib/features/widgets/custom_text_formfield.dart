@@ -18,7 +18,7 @@ class CustomTextFormfield extends StatelessWidget {
     this.obScureText,
     this.keyboardType,
     this.prefixIcon,
-    this.maxLines,
+    this.maxLines = 1,
     this.maxLength,
   });
 

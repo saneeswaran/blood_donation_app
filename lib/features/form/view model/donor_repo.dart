@@ -1,6 +1,7 @@
 import 'dart:io';
 
 import 'package:blood_donation/core/constants/constants.dart';
+import 'package:blood_donation/features/auth/model/user_model.dart';
 import 'package:blood_donation/features/form/model/donor_model.dart';
 import 'package:blood_donation/features/widgets/custom_snack_bar.dart';
 import 'package:cloud_firestore/cloud_firestore.dart';
@@ -22,6 +23,9 @@ class DonorRepo extends ChangeNotifier {
   //loading
   bool _isLoading = false;
   bool get isLoading => _isLoading;
+
+  UserModel? _userData;
+  UserModel? get userData => _userData;
 
   void setLoading(bool value) {
     _isLoading = value;
@@ -77,7 +81,7 @@ class DonorRepo extends ChangeNotifier {
         state: state,
         acceptedTerms: acceptedTerms,
       );
-
+      _userData = UserModel.fromMap(donorModel.toMap());
       await docRef.set(donorModel.toMap());
       _allDonor.add(donorModel);
       _filterDonor = _allDonor;

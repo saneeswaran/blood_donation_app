@@ -136,6 +136,7 @@ class DonorUiController extends ChangeNotifier {
       imageSource: ImageSource.camera,
     );
     _imageFile = pickedFile;
+    if (context.mounted) Navigator.pop(context);
     notifyListeners();
   }
 
@@ -145,6 +146,7 @@ class DonorUiController extends ChangeNotifier {
       imageSource: ImageSource.gallery,
     );
     _imageFile = pickedFile;
+    if (context.mounted) Navigator.pop(context);
     notifyListeners();
   }
   //widgets
