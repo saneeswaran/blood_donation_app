@@ -115,6 +115,16 @@ class DonorRepo extends ChangeNotifier {
     return _allDonor;
   }
 
+  void listenDonors() {
+    collectionReference.snapshots().listen((event) {
+      _allDonor = event.docs
+          .map((e) => DonorModel.fromMap(e.data() as Map<String, dynamic>))
+          .toList();
+      _filterDonor = _allDonor;
+      notifyListeners();
+    });
+  }
+
   Future<bool> deleteDonor({required BuildContext context}) async {
     try {
       setLoading(true);

@@ -26,7 +26,7 @@ void main() async {
         ChangeNotifierProvider(create: (_) => AuthRepo()),
         ChangeNotifierProvider(create: (_) => BottomNavRepo()),
         ChangeNotifierProvider(create: (_) => SearchRepo()),
-        ChangeNotifierProvider(create: (_) => DonorRepo()),
+        ChangeNotifierProvider(create: (_) => DonorRepo()..listenDonors()),
         ChangeNotifierProvider(create: (_) => GoogleMapProvider()),
         ChangeNotifierProvider(create: (_) => StateDistrictProvider()),
         //ui controllers

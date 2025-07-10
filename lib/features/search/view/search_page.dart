@@ -1,11 +1,9 @@
 import 'package:animations/animations.dart';
 import 'package:blood_donation/core/color/appcolor.dart';
-import 'package:blood_donation/features/form/view%20model/donor_repo.dart';
 import 'package:blood_donation/features/search/view/widget/user_list_template.dart';
 import 'package:blood_donation/features/search/widget/filter/view/filter_donors.dart';
 import 'package:blood_donation/features/widgets/custom_text_formfield.dart';
 import 'package:flutter/material.dart';
-import 'package:provider/provider.dart';
 
 class SearchPage extends StatefulWidget {
   const SearchPage({super.key});
@@ -16,13 +14,6 @@ class SearchPage extends StatefulWidget {
 
 class _SearchPageState extends State<SearchPage> {
   final searchController = TextEditingController();
-
-  @override
-  void initState() {
-    super.initState();
-    context.read<DonorRepo>().getAllDonors(context: context);
-  }
-
   @override
   void dispose() {
     searchController.dispose();
