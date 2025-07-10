@@ -1,5 +1,6 @@
 import 'package:blood_donation/core/color/appcolor.dart';
 import 'package:flutter/material.dart';
+import 'package:provider/provider.dart';
 
 class ProfileUiController extends ChangeNotifier {
   List<String> profileContents = [
@@ -21,12 +22,50 @@ class ProfileUiController extends ChangeNotifier {
     Icons.info,
   ];
 
+  bool _becomeADonor = false;
+
+  bool get becomeADonor => _becomeADonor;
+
+  void setBecomeADonor(bool value) {
+    _becomeADonor = value;
+    notifyListeners();
+  }
+
   Widget buildProfileContent({required Size size}) {
     return ListView.builder(
-      itemCount: profileContents.length,
+      itemCount: profileContents.length + 1,
       shrinkWrap: true,
       physics: const ClampingScrollPhysics(),
       itemBuilder: (context, index) {
+        if (index == 0) {
+          return Consumer<ProfileUiController>(
+            builder: (context, provider, child) {
+              return Container(
+                margin: const EdgeInsets.symmetric(vertical: 10),
+                padding: const EdgeInsets.symmetric(horizontal: 20),
+                height: size.height * 0.07,
+                width: size.width * 1,
+                decoration: BoxDecoration(
+                  borderRadius: BorderRadius.circular(12),
+                  color: Appcolor.lightGrey,
+                ),
+                child: Row(
+                  children: [
+                    const Icon(Icons.bloodtype, color: Appcolor.primaryColor),
+                    const SizedBox(width: 20),
+                    const Text("I want to Donate"),
+                    const Spacer(),
+                    Switch(
+                      value: provider._becomeADonor,
+                      onChanged: (value) => provider.setBecomeADonor(value),
+                      activeColor: Appcolor.primaryColor,
+                    ),
+                  ],
+                ),
+              );
+            },
+          );
+        }
         return Container(
           margin: const EdgeInsets.symmetric(vertical: 10),
           padding: const EdgeInsets.symmetric(horizontal: 20),
@@ -38,9 +77,9 @@ class ProfileUiController extends ChangeNotifier {
           ),
           child: Row(
             children: [
-              Icon(profileIcons[index], color: Appcolor.primaryColor),
+              Icon(profileIcons[index - 1], color: Appcolor.primaryColor),
               const SizedBox(width: 20),
-              Text(profileContents[index]),
+              Text(profileContents[index - 1]),
               const Spacer(),
               const Icon(Icons.arrow_forward_ios, color: Appcolor.primaryColor),
             ],
