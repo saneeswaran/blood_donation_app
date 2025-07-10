@@ -206,6 +206,15 @@ class DonorRepo extends ChangeNotifier {
     return false;
   }
 
+  //ge current user Donor details
+  DonorModel? _currentDonor;
+  DonorModel? get currentDonor => _currentDonor;
+  DonorModel? getCurrentUserDonorDetails() {
+    _currentDonor = _allDonor.where((e) => e.donorId == getCurrentUser()).first;
+    notifyListeners();
+    return _currentDonor;
+  }
+
   List<DonorModel> filterDonorByModel({required DonorModel donor}) {
     _filterDonor = _allDonor
         .where(

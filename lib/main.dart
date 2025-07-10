@@ -8,6 +8,7 @@ import 'package:blood_donation/features/form/view%20model/donor_repo.dart';
 import 'package:blood_donation/features/form/view%20model/state_district_provider.dart';
 import 'package:blood_donation/features/onboard/view%20model/onboard_view_repo.dart';
 import 'package:blood_donation/features/onboard/view/onboard_page.dart';
+import 'package:blood_donation/features/profile/controller/profile_ui_controller.dart';
 import 'package:blood_donation/features/search/view%20model/search_repo.dart';
 import 'package:blood_donation/firebase_options.dart';
 import 'package:firebase_auth/firebase_auth.dart';
@@ -30,6 +31,7 @@ void main() async {
         ChangeNotifierProvider(create: (_) => StateDistrictProvider()),
         //ui controllers
         ChangeNotifierProvider(create: (_) => DonorUiController()),
+        ChangeNotifierProvider(create: (_) => ProfileUiController()),
       ],
       child: MaterialApp(
         title: "Blood Donation",
