@@ -17,6 +17,7 @@ class DonorModel {
   final String city;
   final String state;
   final bool acceptedTerms;
+  final String activeStatus;
   final String imageUrl;
   DonorModel({
     required this.name,
@@ -32,6 +33,7 @@ class DonorModel {
     required this.city,
     required this.state,
     required this.acceptedTerms,
+    this.activeStatus = 'active',
     required this.imageUrl,
   });
   final Timestamp? becomeADonorDate = Timestamp.now();
@@ -51,6 +53,7 @@ class DonorModel {
       'city': city,
       'state': state,
       'acceptedTerms': acceptedTerms,
+      'activeStatus': activeStatus,
       'imageUrl': imageUrl,
     };
   }
@@ -70,6 +73,7 @@ class DonorModel {
       city: map['city'] as String,
       state: map['state'] as String,
       acceptedTerms: map['acceptedTerms'] as bool,
+      activeStatus: map['activeStatus'] as String,
       imageUrl: map['imageUrl'] as String,
     );
   }

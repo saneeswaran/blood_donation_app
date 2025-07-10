@@ -1,4 +1,5 @@
 import 'package:blood_donation/core/color/appcolor.dart';
+import 'package:blood_donation/features/form/view%20model/donor_repo.dart';
 import 'package:flutter/material.dart';
 import 'package:provider/provider.dart';
 
@@ -38,8 +39,8 @@ class ProfileUiController extends ChangeNotifier {
       physics: const ClampingScrollPhysics(),
       itemBuilder: (context, index) {
         if (index == 0) {
-          return Consumer<ProfileUiController>(
-            builder: (context, provider, child) {
+          return Consumer2<ProfileUiController, DonorRepo>(
+            builder: (context, provider, donorRepo, child) {
               return Container(
                 margin: const EdgeInsets.symmetric(vertical: 10),
                 padding: const EdgeInsets.symmetric(horizontal: 20),
@@ -59,7 +60,14 @@ class ProfileUiController extends ChangeNotifier {
                       activeColor: Colors.white,
                       activeTrackColor: Appcolor.primaryColor,
                       value: provider._becomeADonor,
-                      onChanged: (value) => provider.setBecomeADonor(value),
+                      onChanged: (value) async {
+                        provider.setBecomeADonor(value);
+                        await donorRepo.changeDonorActiveStatus(
+                          context: context,
+                          id: donorRepo.currentDonor!.donorId.toString(),
+                          status: _becomeADonor == true ? "active" : "inactive",
+                        );
+                      },
                     ),
                   ],
                 ),

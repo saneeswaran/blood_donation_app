@@ -206,6 +206,33 @@ class DonorRepo extends ChangeNotifier {
     return false;
   }
 
+  //update active status
+
+  Future<bool> changeDonorActiveStatus({
+    required BuildContext context,
+    required String id,
+    required String status,
+  }) async {
+    try {
+      final DocumentSnapshot documentSnapshot = await collectionReference
+          .where("donorId", isEqualTo: id)
+          .get()
+          .then((value) => value.docs.first);
+
+      if (documentSnapshot.exists) {
+        await documentSnapshot.reference.update({"activeStatus": status});
+      } else {
+        return false;
+      }
+      return true;
+    } catch (e) {
+      if (context.mounted) {
+        failedSnackBar(message: e.toString(), context: context);
+      }
+      return false;
+    }
+  }
+
   //ge current user Donor details
   DonorModel? _currentDonor;
   DonorModel? get currentDonor => _currentDonor;
