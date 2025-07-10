@@ -56,9 +56,10 @@ class ProfileUiController extends ChangeNotifier {
                     const Text("I want to Donate"),
                     const Spacer(),
                     Switch(
+                      activeColor: Colors.white,
+                      activeTrackColor: Appcolor.primaryColor,
                       value: provider._becomeADonor,
                       onChanged: (value) => provider.setBecomeADonor(value),
-                      activeColor: Appcolor.primaryColor,
                     ),
                   ],
                 ),
