@@ -84,8 +84,6 @@ class DonorRepo extends ChangeNotifier {
         createdAt: Timestamp.now(),
       );
       await docRef.set(donorModel.toMap());
-      _allDonor.add(donorModel);
-      _filterDonor = _allDonor;
       setLoading(false);
       notifyListeners();
       return true;
