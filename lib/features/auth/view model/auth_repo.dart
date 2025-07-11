@@ -2,6 +2,7 @@ import 'package:blood_donation/features/auth/model/user_model.dart';
 import 'package:blood_donation/features/widgets/custom_snack_bar.dart';
 import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:firebase_auth/firebase_auth.dart';
+import 'package:firebase_messaging/firebase_messaging.dart';
 import 'package:flutter/material.dart';
 
 class AuthRepo extends ChangeNotifier {
@@ -55,13 +56,20 @@ class AuthRepo extends ChangeNotifier {
         email: email,
         password: password,
       );
+      //uid
+      final String authId = firebaseAuth.currentUser!.uid;
+      //doc ref
       final userRef = collectionReference.doc();
+      //fcm
+      final String? fcmToken = await FirebaseMessaging.instance.getToken();
       //user model
       final UserModel userModel = UserModel(
         id: userRef.id,
         name: name,
         email: email,
         password: password,
+        fcmToken: fcmToken,
+        authId: authId,
       );
       await userRef.set(userModel.toMap());
       setLoading(false);
@@ -83,10 +91,31 @@ class AuthRepo extends ChangeNotifier {
   }) async {
     try {
       setLoading(true);
+
+      // Sign in the user
       await firebaseAuth.signInWithEmailAndPassword(
         email: email,
         password: password,
       );
+
+      final String authId = firebaseAuth.currentUser!.uid;
+
+      // Get FCM token
+      final String? fcmToken = await FirebaseMessaging.instance.getToken();
+
+      // Find user document using authId
+      final querySnapshot = await collectionReference
+          .where('authId', isEqualTo: authId)
+          .limit(1)
+          .get();
+
+      if (querySnapshot.docs.isNotEmpty) {
+        final userDoc = querySnapshot.docs.first.reference;
+
+        // Update the user's FCM token in Firestore
+        await userDoc.update({'fcmToken': fcmToken});
+      }
+
       setLoading(false);
       notifyListeners();
       return true;
@@ -95,8 +124,8 @@ class AuthRepo extends ChangeNotifier {
         setLoading(false);
         failedSnackBar(message: e.toString(), context: context);
       }
+      return false;
     }
-    return false;
   }
 
   void logout() async {

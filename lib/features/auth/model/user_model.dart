@@ -6,30 +6,16 @@ class UserModel {
   final String name;
   final String email;
   final String password;
-  final String? bloodType;
+  final String? fcmToken;
+  final String? authId;
   UserModel({
     this.id,
     required this.name,
     required this.email,
     required this.password,
-    this.bloodType,
+    this.fcmToken,
+    this.authId,
   });
-
-  UserModel copyWith({
-    String? id,
-    String? name,
-    String? email,
-    String? password,
-    String? bloodType,
-  }) {
-    return UserModel(
-      id: id ?? this.id,
-      name: name ?? this.name,
-      email: email ?? this.email,
-      password: password ?? this.password,
-      bloodType: bloodType ?? this.bloodType,
-    );
-  }
 
   Map<String, dynamic> toMap() {
     return <String, dynamic>{
@@ -37,7 +23,8 @@ class UserModel {
       'name': name,
       'email': email,
       'password': password,
-      'bloodType': bloodType,
+      'fcmToken': fcmToken,
+      'authId': authId,
     };
   }
 
@@ -47,7 +34,8 @@ class UserModel {
       name: map['name'] as String,
       email: map['email'] as String,
       password: map['password'] as String,
-      bloodType: map['bloodType'] != null ? map['bloodType'] as String : null,
+      fcmToken: map['fcmToken'] != null ? map['fcmToken'] as String : null,
+      authId: map['authId'] != null ? map['authId'] as String : null,
     );
   }
 
@@ -55,29 +43,4 @@ class UserModel {
 
   factory UserModel.fromJson(String source) =>
       UserModel.fromMap(json.decode(source) as Map<String, dynamic>);
-
-  @override
-  String toString() {
-    return 'UserModel(id: $id, name: $name, email: $email, password: $password, bloodType: $bloodType)';
-  }
-
-  @override
-  bool operator ==(covariant UserModel other) {
-    if (identical(this, other)) return true;
-
-    return other.id == id &&
-        other.name == name &&
-        other.email == email &&
-        other.password == password &&
-        other.bloodType == bloodType;
-  }
-
-  @override
-  int get hashCode {
-    return id.hashCode ^
-        name.hashCode ^
-        email.hashCode ^
-        password.hashCode ^
-        bloodType.hashCode;
-  }
 }
