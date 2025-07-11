@@ -1,6 +1,7 @@
 import 'package:blood_donation/core/color/appcolor.dart';
 import 'package:blood_donation/features/form/view%20model/donor_repo.dart';
 import 'package:blood_donation/features/profile/model/profile_tile_model.dart';
+import 'package:blood_donation/features/widgets/custom_snack_bar.dart';
 import 'package:flutter/material.dart';
 import 'package:provider/provider.dart';
 
@@ -43,12 +44,22 @@ class ProfileUiController extends ChangeNotifier {
                       activeTrackColor: Appcolor.primaryColor,
                       value: provider._becomeADonor,
                       onChanged: (value) async {
-                        provider.setBecomeADonor(value);
-                        await donorRepo.changeDonorActiveStatus(
-                          context: context,
-                          id: donorRepo.currentDonor!.donorId.toString(),
-                          status: _becomeADonor == true ? "active" : "inactive",
-                        );
+                        //check user is became a donor
+                        final bool isDonor = donorRepo.isCheckUserBecameDonor();
+
+                        if (isDonor) {
+                          provider.setBecomeADonor(value);
+                          await donorRepo.changeDonorActiveStatus(
+                            context: context,
+                            id: donorRepo.getCurrentUser(),
+                            status: value ? "active" : "inactive",
+                          );
+                        } else {
+                          failedSnackBar(
+                            message: "Please become a donor first",
+                            context: context,
+                          );
+                        }
                       },
                     ),
                   ],

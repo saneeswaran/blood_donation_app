@@ -29,6 +29,7 @@ class DonorRepo extends ChangeNotifier {
 
   void setLoading(bool value) {
     _isLoading = value;
+    notifyListeners();
   }
 
   Future<bool> addDonor({
@@ -64,6 +65,8 @@ class DonorRepo extends ChangeNotifier {
       final imageUrl = response.secureUrl;
       //donor model
       final DonorModel donorModel = DonorModel(
+        authId: getCurrentUser(),
+        activeStatus: "active",
         imageUrl: imageUrl,
         id: docRef.id,
         donorId: getCurrentUser(),
@@ -78,8 +81,8 @@ class DonorRepo extends ChangeNotifier {
         city: city,
         state: state,
         acceptedTerms: acceptedTerms,
+        createdAt: Timestamp.now(),
       );
-      _userData = UserModel.fromMap(donorModel.toMap());
       await docRef.set(donorModel.toMap());
       _allDonor.add(donorModel);
       _filterDonor = _allDonor;
@@ -186,6 +189,8 @@ class DonorRepo extends ChangeNotifier {
       );
       final imageUrl = response.secureUrl;
       final DonorModel donorModel = DonorModel(
+        authId: currentUser,
+        activeStatus: "active",
         imageUrl: imageUrl,
         name: name,
         donorId: donorId,
@@ -225,7 +230,7 @@ class DonorRepo extends ChangeNotifier {
   }) async {
     try {
       final DocumentSnapshot documentSnapshot = await collectionReference
-          .where("donorId", isEqualTo: id)
+          .where("authId", isEqualTo: id)
           .get()
           .then((value) => value.docs.first);
 
@@ -244,12 +249,34 @@ class DonorRepo extends ChangeNotifier {
   }
 
   //ge current user Donor details
-  DonorModel? _currentDonor;
-  DonorModel? get currentDonor => _currentDonor;
-  DonorModel? getCurrentUserDonorDetails() {
-    _currentDonor = _allDonor.where((e) => e.donorId == getCurrentUser()).first;
-    notifyListeners();
-    return _currentDonor;
+  UserModel? _currentDonor;
+  UserModel? get currentDonor => _currentDonor;
+
+  Future<UserModel> getCurrentUserData({required BuildContext context}) async {
+    try {
+      setLoading(true);
+      final userCollectionReference = FirebaseFirestore.instance.collection(
+        "users",
+      );
+      final DocumentSnapshot documentSnapshot = await userCollectionReference
+          .where("authId", isEqualTo: getCurrentUser())
+          .get()
+          .then((value) => value.docs.first);
+
+      if (documentSnapshot.exists) {
+        _currentDonor = UserModel.fromMap(
+          documentSnapshot.data() as Map<String, dynamic>,
+        );
+        setLoading(false);
+        notifyListeners();
+      }
+    } catch (e) {
+      setLoading(false);
+      if (context.mounted) {
+        failedSnackBar(message: e.toString(), context: context);
+      }
+    }
+    return _currentDonor!;
   }
 
   List<DonorModel> filterDonorByModel({required DonorModel donor}) {
@@ -282,5 +309,10 @@ class DonorRepo extends ChangeNotifier {
 
     notifyListeners();
     return _filterDonor;
+  }
+
+  bool isCheckUserBecameDonor() {
+    final bool isDonor = _allDonor.any((e) => e.authId == getCurrentUser());
+    return isDonor;
   }
 }

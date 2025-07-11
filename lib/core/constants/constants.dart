@@ -8,6 +8,8 @@ class AppImages {
   static const String onboard1 = "${Constants.onboardPath}/onboard1.jpg";
   static const String onboard2 = "${Constants.onboardPath}/onboard2.jpg";
   static const String onboard3 = "${Constants.onboardPath}/onboard3.jpg";
+  static const noProfile =
+      "https://i.pinimg.com/736x/2c/47/d5/2c47d5dd5b532f83bb55c4cd6f5bd1ef.jpg";
 }
 
 class AppData {

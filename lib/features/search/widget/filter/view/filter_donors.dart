@@ -155,6 +155,7 @@ class _FilterDonorsState extends State<FilterDonors> {
                             phone: '',
                             email: '',
                             address: '',
+                            activeStatus: 'active',
                             city: state.selectedDistrict!,
                             state: state.selectedState!,
                             acceptedTerms: false,

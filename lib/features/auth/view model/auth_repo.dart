@@ -103,7 +103,6 @@ class AuthRepo extends ChangeNotifier {
       // Get FCM token
       final String? fcmToken = await FirebaseMessaging.instance.getToken();
 
-      // Find user document using authId
       final querySnapshot = await collectionReference
           .where('authId', isEqualTo: authId)
           .limit(1)
@@ -112,7 +111,6 @@ class AuthRepo extends ChangeNotifier {
       if (querySnapshot.docs.isNotEmpty) {
         final userDoc = querySnapshot.docs.first.reference;
 
-        // Update the user's FCM token in Firestore
         await userDoc.update({'fcmToken': fcmToken});
       }
 
