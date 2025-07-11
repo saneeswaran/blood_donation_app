@@ -1,28 +1,10 @@
 import 'package:blood_donation/core/color/appcolor.dart';
 import 'package:blood_donation/features/form/view%20model/donor_repo.dart';
+import 'package:blood_donation/features/profile/model/profile_tile_model.dart';
 import 'package:flutter/material.dart';
 import 'package:provider/provider.dart';
 
 class ProfileUiController extends ChangeNotifier {
-  List<String> profileContents = [
-    'Edit Profile',
-    "Blood request",
-    "Settings",
-    "Invite Friends",
-    "Privacy Policy",
-    "Terms and Conditions",
-    "About Us",
-  ];
-  List<IconData> profileIcons = [
-    Icons.person,
-    Icons.bloodtype,
-    Icons.settings,
-    Icons.share,
-    Icons.privacy_tip,
-    Icons.policy,
-    Icons.info,
-  ];
-
   bool _becomeADonor = false;
 
   bool get becomeADonor => _becomeADonor;
@@ -34,7 +16,7 @@ class ProfileUiController extends ChangeNotifier {
 
   Widget buildProfileContent({required Size size}) {
     return ListView.builder(
-      itemCount: profileContents.length + 1,
+      itemCount: ProfileTileModel.profileTiles.length + 1,
       shrinkWrap: true,
       physics: const ClampingScrollPhysics(),
       itemBuilder: (context, index) {
@@ -75,23 +57,34 @@ class ProfileUiController extends ChangeNotifier {
             },
           );
         }
-        return Container(
-          margin: const EdgeInsets.symmetric(vertical: 10),
-          padding: const EdgeInsets.symmetric(horizontal: 20),
-          height: size.height * 0.07,
-          width: size.width * 1,
-          decoration: BoxDecoration(
-            borderRadius: BorderRadius.circular(12),
-            color: Appcolor.lightGrey,
-          ),
-          child: Row(
-            children: [
-              Icon(profileIcons[index - 1], color: Appcolor.primaryColor),
-              const SizedBox(width: 20),
-              Text(profileContents[index - 1]),
-              const Spacer(),
-              const Icon(Icons.arrow_forward_ios, color: Appcolor.primaryColor),
-            ],
+        return GestureDetector(
+          onTap: () {
+            ProfileTileModel.profileTiles[index - 1].onTap(context);
+          },
+          child: Container(
+            margin: const EdgeInsets.symmetric(vertical: 10),
+            padding: const EdgeInsets.symmetric(horizontal: 20),
+            height: size.height * 0.07,
+            width: size.width * 1,
+            decoration: BoxDecoration(
+              borderRadius: BorderRadius.circular(12),
+              color: Appcolor.lightGrey,
+            ),
+            child: Row(
+              children: [
+                Icon(
+                  ProfileTileModel.profileTiles[index - 1].icon,
+                  color: Appcolor.primaryColor,
+                ),
+                const SizedBox(width: 20),
+                Text(ProfileTileModel.profileTiles[index - 1].title),
+                const Spacer(),
+                const Icon(
+                  Icons.arrow_forward_ios,
+                  color: Appcolor.primaryColor,
+                ),
+              ],
+            ),
           ),
         );
       },
