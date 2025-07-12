@@ -29,7 +29,6 @@ class DonorRepo extends ChangeNotifier {
 
   void setLoading(bool value) {
     _isLoading = value;
-    notifyListeners();
   }
 
   Future<bool> addDonor({

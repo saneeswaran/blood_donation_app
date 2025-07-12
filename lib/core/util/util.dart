@@ -1,6 +1,7 @@
 import 'dart:io';
 import 'package:blood_donation/features/widgets/custom_snack_bar.dart';
 import 'package:flutter_image_compress/flutter_image_compress.dart';
+import 'package:modal_bottom_sheet/modal_bottom_sheet.dart';
 import 'package:path/path.dart' as path;
 import 'package:flutter/material.dart';
 import 'package:page_transition/page_transition.dart';
@@ -122,4 +123,24 @@ Future<File> imagePickerFromSource({
     }
     return File('');
   }
+}
+
+void bottomSheet({
+  required BuildContext context,
+  required Size size,
+  required double height,
+  required Widget child,
+}) {
+  showMaterialModalBottomSheet(
+    context: context,
+    builder: (context) => Container(
+      height: height,
+      width: size.width * 1,
+      decoration: BoxDecoration(
+        borderRadius: BorderRadius.circular(12),
+        color: Colors.white,
+      ),
+      child: child,
+    ),
+  );
 }
