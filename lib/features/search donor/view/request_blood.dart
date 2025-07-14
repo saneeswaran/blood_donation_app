@@ -1,7 +1,10 @@
 import 'package:blood_donation/features/form/controller/donor_ui_controller.dart';
+import 'package:blood_donation/features/form/controller/google_map_provider.dart';
 import 'package:blood_donation/features/form/view%20model/state_district_provider.dart';
+import 'package:blood_donation/features/search%20donor/view%20model/request_blood_repo.dart';
 import 'package:blood_donation/features/widgets/custom_elevated_button.dart';
 import 'package:blood_donation/features/widgets/custom_text_formfield.dart';
+import 'package:blood_donation/features/widgets/loader.dart';
 import 'package:flutter/material.dart';
 import 'package:provider/provider.dart';
 
@@ -17,9 +20,17 @@ class _RequestBloodState extends State<RequestBlood> {
   final nameController = TextEditingController();
   final phoneController = TextEditingController();
   final addressController = TextEditingController();
-  final cityController = TextEditingController();
-  final stateController = TextEditingController();
-  final bloodGroupController = TextEditingController();
+
+  @override
+  void initState() {
+    super.initState();
+    final googleMap = context.read<GoogleMapProvider>();
+    googleMap.getCurrentLocation().then((_) {
+      addressController.text = googleMap.address;
+    });
+    context.read<StateDistrictProvider>().loadStateDistrictData();
+  }
+
   @override
   Widget build(BuildContext context) {
     final donorUiController = context.read<DonorUiController>();
@@ -40,6 +51,7 @@ class _RequestBloodState extends State<RequestBlood> {
                 fontWeight: FontWeight.bold,
               ),
             ),
+            const SizedBox(),
             CustomTextFormfield(hintText: "Name", controller: nameController),
             CustomTextFormfield(hintText: "Phone", controller: phoneController),
             CustomTextFormfield(hintText: "Email", controller: emailController),
@@ -68,15 +80,22 @@ class _RequestBloodState extends State<RequestBlood> {
             SizedBox(
               height: size.height * 0.07,
               width: size.width * 1,
-              child: CustomElevatedButton(
-                onPressed: () {},
-                child: const Text(
-                  "Submit Request",
-                  style: TextStyle(
-                    color: Colors.white,
-                    fontWeight: FontWeight.bold,
-                  ),
-                ),
+              child: Consumer<RequestBloodRepo>(
+                builder: (context, value, child) {
+                  final isLoading = value.isLoading;
+                  return CustomElevatedButton(
+                    onPressed: () {},
+                    child: isLoading
+                        ? const Loader()
+                        : const Text(
+                            "Submit Request",
+                            style: TextStyle(
+                              color: Colors.white,
+                              fontWeight: FontWeight.bold,
+                            ),
+                          ),
+                  );
+                },
               ),
             ),
           ],

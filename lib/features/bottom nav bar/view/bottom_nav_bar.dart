@@ -1,4 +1,3 @@
-import 'package:animations/animations.dart';
 import 'package:blood_donation/core/color/appcolor.dart';
 import 'package:blood_donation/core/util/util.dart';
 import 'package:blood_donation/features/bottom%20nav%20bar/view%20model/bottom_nav_repo.dart';
