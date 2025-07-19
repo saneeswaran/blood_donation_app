@@ -4,17 +4,15 @@ import 'dart:convert';
 class UserModel {
   final String? id;
   final String name;
+  final String? donorId;
   final String email;
-  final String? state;
-  final String? city;
   final String? fcmToken;
   final String? authId;
   UserModel({
     this.id,
     required this.name,
+    this.donorId,
     required this.email,
-    this.state,
-    this.city,
     this.fcmToken,
     this.authId,
   });
@@ -23,9 +21,8 @@ class UserModel {
     return <String, dynamic>{
       'id': id,
       'name': name,
+      'donorId': donorId,
       'email': email,
-      'state': state,
-      'city': city,
       'fcmToken': fcmToken,
       'authId': authId,
     };
@@ -35,9 +32,8 @@ class UserModel {
     return UserModel(
       id: map['id'] != null ? map['id'] as String : null,
       name: map['name'] as String,
+      donorId: map['donorId'] != null ? map['donorId'] as String : null,
       email: map['email'] as String,
-      state: map['state'] != null ? map['state'] as String : null,
-      city: map['city'] != null ? map['city'] as String : null,
       fcmToken: map['fcmToken'] != null ? map['fcmToken'] as String : null,
       authId: map['authId'] != null ? map['authId'] as String : null,
     );

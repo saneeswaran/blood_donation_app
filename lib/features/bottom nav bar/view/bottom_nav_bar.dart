@@ -1,3 +1,5 @@
+import 'dart:developer';
+
 import 'package:blood_donation/core/color/appcolor.dart';
 import 'package:blood_donation/core/util/util.dart';
 import 'package:blood_donation/features/bottom%20nav%20bar/view%20model/bottom_nav_repo.dart';
@@ -5,6 +7,7 @@ import 'package:blood_donation/features/form/view/add_donor_form.dart';
 import 'package:blood_donation/features/search%20donor/view/request_blood.dart';
 import 'package:flutter/material.dart';
 import 'package:provider/provider.dart';
+import 'package:shared_preferences/shared_preferences.dart';
 import 'package:stylish_bottom_bar/stylish_bottom_bar.dart';
 
 class BottomNavBar extends StatelessWidget {
@@ -19,58 +22,72 @@ class BottomNavBar extends StatelessWidget {
       floatingActionButton: FloatingActionButton(
         shape: const CircleBorder(),
         backgroundColor: Colors.white,
-        onPressed: () {
-          bottomSheet(
-            context: context,
-            size: size,
-            height: size.height * 0.2,
-            child: Column(
-              children: [
-                ListTile(
-                  leading: const Icon(
-                    Icons.bloodtype,
-                    color: Appcolor.mediaiuGrey,
-                  ),
-                  title: const Text(
-                    "Become a donor",
-                    style: TextStyle(
-                      color: Colors.black,
-                      fontSize: 16,
-                      fontWeight: FontWeight.bold,
-                    ),
-                  ),
-                  onTap: () {
-                    Navigator.pop(context);
-                    navigateBottomToUp(
-                      context: context,
-                      route: const AddDonorForm(),
-                    );
-                  },
-                ),
-                ListTile(
-                  leading: const Icon(
-                    Icons.bloodtype,
-                    color: Appcolor.mediaiuGrey,
-                  ),
-                  title: const Text(
-                    "Request blood",
-                    style: TextStyle(
-                      color: Colors.black,
-                      fontSize: 16,
-                      fontWeight: FontWeight.bold,
-                    ),
-                  ),
-                  onTap: () {
-                    Navigator.pop(context);
-                    navigateBottomToUp(
-                      context: context,
-                      route: const RequestBlood(),
-                    );
-                  },
-                ),
-              ],
-            ),
-          );
+        onPressed: () async {
+          final pref = await SharedPreferences.getInstance();
+          final docId = pref.getString('donorId');
+          log(docId.toString());
+          docId!.isNotEmpty
+              ? context.mounted
+                    ? {
+                        navigateBottomToUp(
+                          context: context,
+                          route: const RequestBlood(),
+                        ),
+                      }
+                    : context.mounted
+                    ? bottomSheet(
+                        context: context,
+                        size: size,
+                        height: size.height * 0.2,
+                        child: Column(
+                          children: [
+                            ListTile(
+                              leading: const Icon(
+                                Icons.bloodtype,
+                                color: Appcolor.mediaiuGrey,
+                              ),
+                              title: const Text(
+                                "Become a donor",
+                                style: TextStyle(
+                                  color: Colors.black,
+                                  fontSize: 16,
+                                  fontWeight: FontWeight.bold,
+                                ),
+                              ),
+                              onTap: () {
+                                Navigator.pop(context);
+                                navigateBottomToUp(
+                                  context: context,
+                                  route: const AddDonorForm(),
+                                );
+                              },
+                            ),
+                            ListTile(
+                              leading: const Icon(
+                                Icons.bloodtype,
+                                color: Appcolor.mediaiuGrey,
+                              ),
+                              title: const Text(
+                                "Request blood",
+                                style: TextStyle(
+                                  color: Colors.black,
+                                  fontSize: 16,
+                                  fontWeight: FontWeight.bold,
+                                ),
+                              ),
+                              onTap: () {
+                                Navigator.pop(context);
+                                navigateBottomToUp(
+                                  context: context,
+                                  route: const RequestBlood(),
+                                );
+                              },
+                            ),
+                          ],
+                        ),
+                      )
+                    : null
+              : null;
         },
         child: const Icon(Icons.add, color: Colors.black),
       ),

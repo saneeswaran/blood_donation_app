@@ -4,6 +4,7 @@ import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:firebase_auth/firebase_auth.dart';
 import 'package:firebase_messaging/firebase_messaging.dart';
 import 'package:flutter/material.dart';
+import 'package:shared_preferences/shared_preferences.dart';
 
 class AuthRepo extends ChangeNotifier {
   final CollectionReference collectionReference = FirebaseFirestore.instance
@@ -67,7 +68,6 @@ class AuthRepo extends ChangeNotifier {
         id: userRef.id,
         name: name,
         email: email,
-        password: password,
         fcmToken: fcmToken,
         authId: authId,
       );
@@ -110,7 +110,8 @@ class AuthRepo extends ChangeNotifier {
 
       if (querySnapshot.docs.isNotEmpty) {
         final userDoc = querySnapshot.docs.first.reference;
-
+        final pref = await SharedPreferences.getInstance();
+        await pref.setString('donorId', userDoc.id);
         await userDoc.update({'fcmToken': fcmToken});
       }
 

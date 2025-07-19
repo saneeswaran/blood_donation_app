@@ -1,5 +1,4 @@
 import 'dart:io';
-
 import 'package:blood_donation/core/constants/constants.dart';
 import 'package:blood_donation/features/auth/model/user_model.dart';
 import 'package:blood_donation/features/form/model/donor_model.dart';
@@ -8,6 +7,7 @@ import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:cloudinary_public/cloudinary_public.dart';
 import 'package:firebase_auth/firebase_auth.dart';
 import 'package:flutter/material.dart';
+import 'package:shared_preferences/shared_preferences.dart';
 
 class DonorRepo extends ChangeNotifier {
   //
@@ -49,6 +49,8 @@ class DonorRepo extends ChangeNotifier {
   }) async {
     try {
       setLoading(true);
+      final CollectionReference userCollection = FirebaseFirestore.instance
+          .collection("users");
       final docRef = collectionReference.doc();
       //upload images
       CloudinaryPublic cloudinaryPublic = CloudinaryPublic(
@@ -82,7 +84,17 @@ class DonorRepo extends ChangeNotifier {
         acceptedTerms: acceptedTerms,
         createdAt: Timestamp.now(),
       );
+      //save donor id in local storage
+      final pref = await SharedPreferences.getInstance();
+      await pref.setString("donorId", docRef.id);
       await docRef.set(donorModel.toMap());
+      //save state and district in user collection
+      final QuerySnapshot querySnapshot = await userCollection
+          .where("authId", isEqualTo: getCurrentUser())
+          .get();
+      if (querySnapshot.docs.isNotEmpty) {
+        await querySnapshot.docs.first.reference.update({'donorId': docRef.id});
+      }
       setLoading(false);
       notifyListeners();
       return true;
