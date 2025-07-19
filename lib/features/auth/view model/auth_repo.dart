@@ -4,7 +4,6 @@ import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:firebase_auth/firebase_auth.dart';
 import 'package:firebase_messaging/firebase_messaging.dart';
 import 'package:flutter/material.dart';
-import 'package:shared_preferences/shared_preferences.dart';
 
 class AuthRepo extends ChangeNotifier {
   final CollectionReference collectionReference = FirebaseFirestore.instance
@@ -110,8 +109,6 @@ class AuthRepo extends ChangeNotifier {
 
       if (querySnapshot.docs.isNotEmpty) {
         final userDoc = querySnapshot.docs.first.reference;
-        final pref = await SharedPreferences.getInstance();
-        await pref.setString('donorId', userDoc.id);
         await userDoc.update({'fcmToken': fcmToken});
       }
 
@@ -130,5 +127,31 @@ class AuthRepo extends ChangeNotifier {
   void logout() async {
     await firebaseAuth.signOut();
     notifyListeners();
+  }
+
+  //check user become donor
+  bool _isDonor = false;
+  bool get isDonor => _isDonor;
+  Future<void> checkUserBecomeDonor({required BuildContext context}) async {
+    try {
+      final currentUser = firebaseAuth.currentUser!.uid;
+      final CollectionReference donorCollection = FirebaseFirestore.instance
+          .collection('donors');
+      final QuerySnapshot querySnapshot = await donorCollection
+          .where("authId", isEqualTo: currentUser)
+          .limit(1)
+          .get();
+      if (querySnapshot.docs.isNotEmpty) {
+        _isDonor = true;
+        notifyListeners();
+      } else {
+        _isDonor = false;
+        notifyListeners();
+      }
+    } catch (e) {
+      if (context.mounted) {
+        failedSnackBar(message: e.toString(), context: context);
+      }
+    }
   }
 }

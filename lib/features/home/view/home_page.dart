@@ -1,3 +1,4 @@
+import 'package:blood_donation/features/auth/view%20model/auth_repo.dart';
 import 'package:blood_donation/features/form/view%20model/donor_repo.dart';
 import 'package:flutter/material.dart';
 import 'package:provider/provider.dart';
@@ -13,8 +14,11 @@ class _HomePageState extends State<HomePage> {
   @override
   void initState() {
     super.initState();
-    context.read<DonorRepo>().getAllDonors(context: context);
-    context.read<DonorRepo>().getCurrentUserData(context: context);
+    Future.wait([
+      context.read<DonorRepo>().getAllDonors(context: context),
+      context.read<DonorRepo>().getCurrentUserData(context: context),
+      context.read<AuthRepo>().checkUserBecomeDonor(context: context),
+    ]);
   }
 
   @override

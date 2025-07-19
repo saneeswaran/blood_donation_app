@@ -26,7 +26,7 @@ class BottomNavBar extends StatelessWidget {
           final pref = await SharedPreferences.getInstance();
           final docId = pref.getString('donorId');
           log(docId.toString());
-          docId!.isNotEmpty
+          docId! == "null"
               ? context.mounted
                     ? {
                         navigateBottomToUp(
