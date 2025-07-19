@@ -15,7 +15,6 @@ class _HomePageState extends State<HomePage> {
   void initState() {
     super.initState();
     Future.wait([
-      context.read<DonorRepo>().getAllDonors(context: context),
       context.read<DonorRepo>().getCurrentUserData(context: context),
       context.read<AuthRepo>().checkUserBecomeDonor(context: context),
     ]);

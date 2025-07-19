@@ -1,4 +1,5 @@
 import 'package:blood_donation/features/auth/model/user_model.dart';
+import 'package:blood_donation/features/form/model/donor_model.dart';
 import 'package:blood_donation/features/widgets/custom_snack_bar.dart';
 import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:firebase_auth/firebase_auth.dart';
@@ -132,22 +133,31 @@ class AuthRepo extends ChangeNotifier {
   //check user become donor
   bool _isDonor = false;
   bool get isDonor => _isDonor;
+
+  //avoid again and again fetch
+
+  bool _isDonorFetched = false;
+  bool get isDonorFetched => _isDonorFetched;
+
   Future<void> checkUserBecomeDonor({required BuildContext context}) async {
     try {
+      if (_isDonorFetched) return;
       final currentUser = firebaseAuth.currentUser!.uid;
       final CollectionReference donorCollection = FirebaseFirestore.instance
           .collection('donors');
       final QuerySnapshot querySnapshot = await donorCollection
           .where("authId", isEqualTo: currentUser)
-          .limit(1)
           .get();
+      querySnapshot.docs
+          .map((e) => DonorModel.fromMap(e.data() as Map<String, dynamic>))
+          .toList();
       if (querySnapshot.docs.isNotEmpty) {
         _isDonor = true;
-        notifyListeners();
       } else {
         _isDonor = false;
-        notifyListeners();
       }
+      _isDonorFetched = true;
+      notifyListeners();
     } catch (e) {
       if (context.mounted) {
         failedSnackBar(message: e.toString(), context: context);

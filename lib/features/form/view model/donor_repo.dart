@@ -107,26 +107,6 @@ class DonorRepo extends ChangeNotifier {
     return false;
   }
 
-  Future<List<DonorModel>> getAllDonors({required BuildContext context}) async {
-    try {
-      setLoading(true);
-      final QuerySnapshot querySnapshot = await collectionReference.get();
-      _allDonor = querySnapshot.docs
-          .map((e) => DonorModel.fromMap(e.data() as Map<String, dynamic>))
-          .toList();
-      _filterDonor = _allDonor;
-      setLoading(false);
-      notifyListeners();
-      return _allDonor;
-    } catch (e) {
-      setLoading(false);
-      if (context.mounted) {
-        failedSnackBar(message: e.toString(), context: context);
-      }
-    }
-    return _allDonor;
-  }
-
   void listenDonors() {
     collectionReference.snapshots().listen((event) {
       _allDonor = event.docs

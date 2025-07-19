@@ -21,7 +21,6 @@ class DonorModel {
   final String activeStatus;
   final String imageUrl;
   final Timestamp? createdAt;
-  final String? fcmToken;
 
   DonorModel({
     this.authId,
@@ -41,7 +40,6 @@ class DonorModel {
     required this.activeStatus,
     required this.imageUrl,
     this.createdAt,
-    this.fcmToken,
   });
 
   Map<String, dynamic> toMap() {
@@ -63,7 +61,6 @@ class DonorModel {
       'activeStatus': activeStatus,
       'imageUrl': imageUrl,
       'createdAt': createdAt,
-      'fcmToken': fcmToken,
     };
   }
 
@@ -88,7 +85,6 @@ class DonorModel {
       createdAt: map['createdAt'] != null
           ? map['createdAt'] as Timestamp
           : null,
-      fcmToken: map['fcmToken'] != null ? map['fcmToken'] as String : null,
     );
   }
 
@@ -96,4 +92,9 @@ class DonorModel {
 
   factory DonorModel.fromJson(String source) =>
       DonorModel.fromMap(json.decode(source) as Map<String, dynamic>);
+
+  @override
+  String toString() {
+    return 'DonorModel(authId: $authId, name: $name, id: $id, donorId: $donorId, age: $age, gender: $gender, dob: $dob, bloodGroup: $bloodGroup, phone: $phone, email: $email, address: $address, city: $city, state: $state, acceptedTerms: $acceptedTerms, activeStatus: $activeStatus, imageUrl: $imageUrl, createdAt: $createdAt)';
+  }
 }
