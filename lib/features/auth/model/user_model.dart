@@ -5,14 +5,16 @@ class UserModel {
   final String? id;
   final String name;
   final String email;
-  final String password;
+  final String? state;
+  final String? city;
   final String? fcmToken;
   final String? authId;
   UserModel({
     this.id,
     required this.name,
     required this.email,
-    required this.password,
+    this.state,
+    this.city,
     this.fcmToken,
     this.authId,
   });
@@ -22,7 +24,8 @@ class UserModel {
       'id': id,
       'name': name,
       'email': email,
-      'password': password,
+      'state': state,
+      'city': city,
       'fcmToken': fcmToken,
       'authId': authId,
     };
@@ -33,7 +36,8 @@ class UserModel {
       id: map['id'] != null ? map['id'] as String : null,
       name: map['name'] as String,
       email: map['email'] as String,
-      password: map['password'] as String,
+      state: map['state'] != null ? map['state'] as String : null,
+      city: map['city'] != null ? map['city'] as String : null,
       fcmToken: map['fcmToken'] != null ? map['fcmToken'] as String : null,
       authId: map['authId'] != null ? map['authId'] as String : null,
     );

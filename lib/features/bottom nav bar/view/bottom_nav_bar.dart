@@ -20,38 +20,55 @@ class BottomNavBar extends StatelessWidget {
         shape: const CircleBorder(),
         backgroundColor: Colors.white,
         onPressed: () {
-          dialog(
+          bottomSheet(
             context: context,
-            title: "",
-            content: SizedBox(
-              height: size.height * 0.15,
-              width: size.width * 0.5,
-              child: Column(
-                children: [
-                  ListTile(
-                    title: const Text(
-                      "Become a Donor",
-                      style: TextStyle(color: Colors.black),
-                    ),
-                    leading: const Icon(Icons.bloodtype),
-                    onTap: () {
-                      Navigator.pop(context);
-                      navigateTo(context, const AddDonorForm());
-                    },
+            size: size,
+            height: size.height * 0.2,
+            child: Column(
+              children: [
+                ListTile(
+                  leading: const Icon(
+                    Icons.bloodtype,
+                    color: Appcolor.mediaiuGrey,
                   ),
-                  ListTile(
-                    title: const Text(
-                      "Request Blood",
-                      style: TextStyle(color: Colors.black),
+                  title: const Text(
+                    "Become a donor",
+                    style: TextStyle(
+                      color: Colors.black,
+                      fontSize: 16,
+                      fontWeight: FontWeight.bold,
                     ),
-                    leading: const Icon(Icons.bloodtype),
-                    onTap: () {
-                      Navigator.pop(context);
-                      navigateTo(context, const RequestBlood());
-                    },
                   ),
-                ],
-              ),
+                  onTap: () {
+                    Navigator.pop(context);
+                    navigateBottomToUp(
+                      context: context,
+                      route: const AddDonorForm(),
+                    );
+                  },
+                ),
+                ListTile(
+                  leading: const Icon(
+                    Icons.bloodtype,
+                    color: Appcolor.mediaiuGrey,
+                  ),
+                  title: const Text(
+                    "Request blood",
+                    style: TextStyle(
+                      color: Colors.black,
+                      fontSize: 16,
+                      fontWeight: FontWeight.bold,
+                    ),
+                  ),
+                  onTap: () {
+                    Navigator.pop(context);
+                    navigateBottomToUp(
+                      context: context,
+                      route: const RequestBlood(),
+                    );
+                  },
+                ),
+              ],
             ),
           );
         },

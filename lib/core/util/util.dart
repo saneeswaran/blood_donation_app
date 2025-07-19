@@ -33,6 +33,20 @@ void justNavigate({required BuildContext context, required Widget route}) {
   Navigator.push(context, MaterialPageRoute(builder: (context) => route));
 }
 
+void navigateBottomToUp({
+  required BuildContext context,
+  required Widget route,
+}) {
+  Navigator.push(
+    context,
+    PageTransition(
+      type: PageTransitionType.scale,
+      alignment: Alignment.bottomCenter,
+      child: route,
+    ),
+  );
+}
+
 void dialog({
   required BuildContext context,
   required String title,
