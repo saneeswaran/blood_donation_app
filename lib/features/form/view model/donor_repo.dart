@@ -241,8 +241,12 @@ class DonorRepo extends ChangeNotifier {
   UserModel? _currentDonor;
   UserModel? get currentDonor => _currentDonor;
 
+  bool _isDonorFetched = false;
+  bool get isDonorFetched => _isDonorFetched;
+
   Future<UserModel> getCurrentUserData({required BuildContext context}) async {
     try {
+      if (_isDonorFetched && _currentDonor != null) return currentDonor!;
       setLoading(true);
       final userCollectionReference = FirebaseFirestore.instance.collection(
         "users",
@@ -257,6 +261,7 @@ class DonorRepo extends ChangeNotifier {
           documentSnapshot.data() as Map<String, dynamic>,
         );
         setLoading(false);
+        _isDonorFetched = true;
         notifyListeners();
       }
     } catch (e) {
